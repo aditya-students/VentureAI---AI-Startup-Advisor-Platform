@@ -1,0 +1,296 @@
+/* ==========================================================================
+   VentureAI — profile.css
+   Styles for the Founder Profile page. Extends tokens from style.css and
+   reuses form elements from auth.css.
+   ========================================================================== */
+
+/* ---------- profile card ---------- */
+.profile-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 48px 44px;
+  max-width: 620px;
+  margin: 0 auto;
+  animation: profileFadeIn 0.5s ease;
+}
+
+@keyframes profileFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- avatar ---------- */
+.profile-avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--purple), var(--purple-2));
+  color: var(--white);
+  font-size: 1.8rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 8px 24px rgba(91, 63, 228, 0.25);
+}
+
+/* ---------- header info ---------- */
+.profile-header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+.profile-header__name {
+  font-size: clamp(1.3rem, 3vw, 1.7rem);
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -0.02em;
+}
+.profile-header__email {
+  font-size: 0.92rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ---------- view-mode sections ---------- */
+.profile-section {
+  margin-bottom: 24px;
+}
+.profile-section:last-child {
+  margin-bottom: 0;
+}
+.profile-section__label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--purple);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.profile-section__value {
+  font-size: 0.95rem;
+  color: var(--navy);
+  line-height: 1.65;
+}
+.profile-section__empty {
+  font-size: 0.92rem;
+  color: var(--muted);
+  font-style: italic;
+}
+.profile-section__link {
+  color: var(--purple);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: color 0.15s ease;
+}
+.profile-section__link:hover {
+  color: #4d34c9;
+  text-decoration: underline;
+}
+
+/* ---------- skills tags ---------- */
+.profile-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.skill-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--light-purple);
+  color: var(--purple);
+  font-size: 0.84rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid #E2DBFF;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.skill-tag--editable:hover {
+  background: #EDE8FF;
+}
+.skill-tag__remove {
+  background: none;
+  border: none;
+  color: var(--purple);
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+  display: flex;
+  align-items: center;
+}
+.skill-tag__remove:hover {
+  opacity: 1;
+}
+
+/* ---------- skills input ---------- */
+.skill-input-wrap {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.skill-input-wrap input {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font);
+  padding: 9px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--navy);
+  font-size: 0.92rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.skill-input-wrap input:focus {
+  outline: none;
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(91, 63, 228, 0.12);
+}
+.skill-input-wrap input::placeholder { color: #9CA3AF; }
+.skill-add-btn {
+  padding: 9px 18px;
+  border-radius: 10px;
+  border: 1px solid var(--purple);
+  background: var(--light-purple);
+  color: var(--purple);
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  white-space: nowrap;
+}
+.skill-add-btn:hover {
+  background: #E2DBFF;
+}
+
+/* ---------- edit form ---------- */
+.profile-edit {
+  display: none;
+}
+.profile-edit.active {
+  display: block;
+}
+.profile-view.hidden {
+  display: none;
+}
+
+.profile-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 20px;
+}
+.profile-form-group label {
+  font-size: 0.87rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+.profile-form-group textarea,
+.profile-form-group input[type="text"],
+.profile-form-group input[type="url"] {
+  font-family: var(--font);
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--navy);
+  font-size: 0.95rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  resize: vertical;
+}
+.profile-form-group textarea:focus,
+.profile-form-group input:focus {
+  outline: none;
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(91, 63, 228, 0.12);
+}
+.profile-form-group textarea::placeholder,
+.profile-form-group input::placeholder { color: #9CA3AF; }
+.profile-form-group textarea {
+  min-height: 80px;
+}
+.profile-form-group .field-hint {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* ---------- action buttons ---------- */
+.profile-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+.profile-edit-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+}
+.profile-edit-actions .btn {
+  flex: 1;
+}
+
+/* ---------- toast notification ---------- */
+.profile-toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(120%);
+  padding: 14px 28px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
+  z-index: 2000;
+  opacity: 0;
+  transition: transform 0.35s ease, opacity 0.35s ease;
+  pointer-events: none;
+}
+.profile-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+.profile-toast--success {
+  background: var(--success-bg);
+  color: #15803D;
+  border: 1px solid var(--success-border);
+}
+.profile-toast--error {
+  background: var(--error-bg);
+  color: var(--error);
+  border: 1px solid var(--error-border);
+}
+
+/* ---------- divider ---------- */
+.profile-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 28px 0;
+  border: none;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 620px) {
+  .profile-card {
+    padding: 32px 22px;
+    border-radius: var(--radius-md);
+  }
+  .profile-avatar {
+    width: 72px;
+    height: 72px;
+    font-size: 1.5rem;
+  }
+  .profile-edit-actions {
+    flex-direction: column;
+  }
+  .profile-edit-actions .btn {
+    width: 100%;
+  }
+}

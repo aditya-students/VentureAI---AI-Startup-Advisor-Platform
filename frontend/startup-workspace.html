@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Startup Workspace — VentureAI</title>
+<meta name="description" content="Your startup workspace — manage your startup's core information, track progress, and access development tools.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/startup-workspace.css">
+<link rel="stylesheet" href="css/idea-validation.css">
+</head>
+<body data-protected>
+
+<!-- ================= NAVBAR ================= -->
+<header class="navbar" id="navbar">
+  <div class="container navbar__inner">
+    <a href="index.html" class="navbar__logo">
+      <span class="logo-icon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 17 4.5 17 11C17 14.5 15.5 17 15.5 17H8.5C8.5 17 7 14.5 7 11C7 4.5 12 2 12 2Z" fill="white"/><circle cx="12" cy="10" r="2" fill="#5B3FE4"/><path d="M8.5 17L6 21L9 19.5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 17L18 21L15 19.5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="navbar__brand">VentureAI</span>
+    </a>
+
+    <nav class="navbar__nav" id="navbar-nav" aria-label="Primary">
+      <ul></ul>
+    </nav>
+
+    <div class="navbar__actions" data-navbar-actions></div>
+
+    <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="mobile-nav" id="mobile-nav">
+    <ul></ul>
+    <div class="mobile-nav__actions" data-navbar-actions></div>
+  </div>
+</header>
+
+<main>
+
+<div class="dashboard-loading">
+  <div class="dashboard-loading__spinner" aria-label="Verifying your session"></div>
+</div>
+
+<div class="dashboard-content">
+  <section class="dashboard-main">
+    <div class="container">
+
+      <!-- ===== EMPTY STATE (no startup) ===== -->
+      <div id="workspace-empty" style="display:none;">
+        <div class="workspace-empty">
+          <span class="workspace-empty__icon" aria-hidden="true">🚀</span>
+          <h1 class="workspace-empty__title">Build Your Startup Workspace</h1>
+          <p class="workspace-empty__desc">Your startup journey starts here. Create your workspace to validate your idea, build your business model, prepare your business plan and create your pitch deck.</p>
+          <div class="workspace-empty__cta">
+            <button type="button" class="btn btn--primary btn--lg" id="btn-create-startup" data-ripple>
+              <span class="btn-text">Create My Startup</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== WORKSPACE (has startup) ===== -->
+      <div id="workspace-main" style="display:none;">
+
+        <!-- Archived banner -->
+        <div id="archived-banner" class="workspace-archived-banner" style="display:none;">
+          <span class="workspace-archived-banner__icon" aria-hidden="true">⚠️</span>
+          <span>This startup is archived. You can no longer actively work on this workspace until it is restored.</span>
+          <button type="button" class="btn btn--outline" id="btn-restore-startup" style="margin-left:auto;white-space:nowrap;">Restore</button>
+        </div>
+
+        <!-- Workspace header -->
+        <div class="workspace-header">
+          <h1>Startup Workspace</h1>
+          <div class="workspace-header__actions">
+            <button type="button" class="btn btn--outline" id="btn-edit-startup">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Edit Info
+            </button>
+            <button type="button" class="btn btn--outline" id="btn-archive-startup" style="color:var(--error,#DC2626);border-color:var(--error-border,#FECACA);">
+              Archive
+            </button>
+          </div>
+        </div>
+
+        <!-- Startup overview card -->
+        <div class="startup-overview" id="startup-overview">
+          <div class="startup-overview__top">
+            <div class="startup-overview__info">
+              <h2 class="startup-overview__name">
+                <span class="startup-overview__icon" aria-hidden="true">🚀</span>
+                <span id="overview-name"></span>
+              </h2>
+              <p class="startup-overview__tagline" id="overview-tagline"></p>
+            </div>
+          </div>
+          <div class="startup-overview__meta">
+            <span class="badge-stage" id="overview-stage"></span>
+            <span class="badge-status" id="overview-status"></span>
+          </div>
+        </div>
+
+        <!-- Info + Tools grid -->
+        <div class="workspace-grid">
+
+          <!-- Startup Information -->
+          <div class="workspace-card" id="card-info">
+            <h3 class="workspace-card__title">
+              <span class="workspace-card__title-icon" aria-hidden="true">📋</span>
+              Startup Information
+            </h3>
+            <div class="info-item">
+              <div class="info-item__label">Problem</div>
+              <div id="info-problem" class="info-item__value"></div>
+            </div>
+            <div class="info-item">
+              <div class="info-item__label">Solution</div>
+              <div id="info-solution" class="info-item__value"></div>
+            </div>
+            <div class="info-item">
+              <div class="info-item__label">Industry</div>
+              <div id="info-industry" class="info-item__value"></div>
+            </div>
+            <div class="info-item">
+              <div class="info-item__label">Target Market</div>
+              <div id="info-target-market" class="info-item__value"></div>
+            </div>
+          </div>
+
+          <!-- Development Tools -->
+          <div class="workspace-card" id="card-tools">
+            <h3 class="workspace-card__title">
+              <span class="workspace-card__title-icon" aria-hidden="true">🛠️</span>
+              Development Tools
+            </h3>
+            <div class="tools-grid">
+              <div class="tool-item tool-item--active" id="tool-idea-validation">
+                <div class="tool-item__icon tool-item__icon--purple">💡</div>
+                <div class="tool-item__content">
+                  <div class="tool-item__name">AI Idea Validation</div>
+                  <div class="tool-item__desc">Validate your startup idea with AI-powered adversarial analysis.</div>
+                </div>
+                <span class="tool-item__cta" id="tool-validation-cta">Validate My Idea</span>
+              </div>
+              <div class="tool-item">
+                <div class="tool-item__icon tool-item__icon--blue">🧩</div>
+                <div class="tool-item__content">
+                  <div class="tool-item__name">Business Model Canvas</div>
+                  <div class="tool-item__desc">Build and refine your Business Model Canvas.</div>
+                </div>
+                <span class="tool-item__badge">Coming Soon</span>
+              </div>
+              <div class="tool-item">
+                <div class="tool-item__icon tool-item__icon--orange">📄</div>
+                <div class="tool-item__content">
+                  <div class="tool-item__name">Business Plan</div>
+                  <div class="tool-item__desc">Create a structured business plan.</div>
+                </div>
+                <span class="tool-item__badge">Coming Soon</span>
+              </div>
+              <div class="tool-item">
+                <div class="tool-item__icon tool-item__icon--purple">🎤</div>
+                <div class="tool-item__content">
+                  <div class="tool-item__name">Pitch Deck</div>
+                  <div class="tool-item__desc">Prepare an investor-ready pitch deck.</div>
+                </div>
+                <span class="tool-item__badge">Coming Soon</span>
+              </div>
+              <div class="tool-item">
+                <div class="tool-item__icon tool-item__icon--green">✅</div>
+                <div class="tool-item__content">
+                  <div class="tool-item__name">Tasks</div>
+                  <div class="tool-item__desc">Track the work required to build your startup.</div>
+                </div>
+                <span class="tool-item__badge">Coming Soon</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Progress + Activity grid -->
+        <div class="workspace-grid">
+
+          <!-- Development Progress -->
+          <div class="workspace-card" id="card-progress">
+            <h3 class="workspace-card__title">
+              <span class="workspace-card__title-icon" aria-hidden="true">📊</span>
+              Development Progress
+            </h3>
+            <div class="progress-list" id="progress-list">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="workspace-card" id="card-activity">
+            <h3 class="workspace-card__title">
+              <span class="workspace-card__title-icon" aria-hidden="true">🕐</span>
+              Recent Activity
+            </h3>
+            <div class="activity-list" id="activity-list">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Recommended Next Steps -->
+        <h2 class="workspace-section-title">Recommended Next Steps</h2>
+        <div class="next-steps">
+          <div class="next-step-card">
+            <div class="next-step-card__icon" aria-hidden="true">💡</div>
+            <div class="next-step-card__content">
+              <div class="next-step-card__title">Validate Your Startup Idea</div>
+              <div class="next-step-card__desc">Get AI-powered adversarial feedback on your startup idea to identify risks, test assumptions, and refine your value proposition.</div>
+            </div>
+            <div class="next-step-card__action">
+              <button type="button" class="btn btn--primary" id="btn-validate-nextstep" data-ripple>
+                <span class="btn-text">Validate My Idea</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== IDEA VALIDATION SECTION ===== -->
+        <div id="validation-section" class="validation-section" style="display:none;">
+
+          <!-- Loading state -->
+          <div id="validation-loading" style="display:none;">
+            <div class="validation-loading">
+              <div class="validation-loading__title">Analyzing your startup...</div>
+              <div class="validation-loading__stages" id="validation-stages">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Report -->
+          <div id="validation-report" style="display:none;">
+
+            <!-- Action bar -->
+            <div class="validation-actions">
+              <button type="button" class="btn btn--primary" id="btn-reanalyze" data-ripple>
+                <span class="btn-text">🔄 Re-analyze Idea</span>
+              </button>
+              <button type="button" class="btn btn--outline" id="btn-show-history">
+                📋 View Previous Versions
+              </button>
+            </div>
+
+            <!-- Score hero -->
+            <div id="score-hero"></div>
+
+            <!-- Veto warnings -->
+            <div id="veto-warnings"></div>
+
+            <!-- Score breakdown -->
+            <div class="workspace-card" style="margin-bottom:24px;">
+              <h3 class="workspace-card__title">
+                <span class="workspace-card__title-icon" aria-hidden="true">📊</span>
+                Score Breakdown
+              </h3>
+              <div id="dimension-scores" class="dimension-scores"></div>
+            </div>
+
+            <!-- LOFA -->
+            <div id="lofa-card"></div>
+
+            <!-- Overall Assessment -->
+            <div id="assessment-card"></div>
+
+            <!-- Red Team Analysis -->
+            <h2 class="workspace-section-title" style="margin-top:8px;">🎯 Red Team Analysis</h2>
+            <div id="redteam-grid" class="redteam-grid"></div>
+
+            <!-- Strengths & Risks -->
+            <div id="sr-grid" class="sr-grid"></div>
+
+            <!-- Falsification Blueprint -->
+            <div id="blueprint-card"></div>
+
+            <!-- Recommended Next Steps -->
+            <div id="val-nextsteps"></div>
+
+            <!-- Version history (hidden by default) -->
+            <div id="version-history" style="display:none;"></div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+</div>
+
+</main>
+
+<!-- ===== CREATE / EDIT MODAL ===== -->
+<div class="workspace-modal-backdrop" id="modal-startup">
+  <div class="workspace-modal" role="dialog" aria-labelledby="modal-title">
+    <div class="workspace-modal__header">
+      <h2 class="workspace-modal__title" id="modal-title">Create Your Startup</h2>
+      <button type="button" class="workspace-modal__close" id="modal-close" aria-label="Close">✕</button>
+    </div>
+    <form id="startup-form" novalidate>
+      <div class="workspace-form-group">
+        <label for="form-name">Startup Name <span class="required">*</span></label>
+        <input type="text" id="form-name" name="name" placeholder="e.g. EduAI" maxlength="150" required>
+      </div>
+      <div class="workspace-form-group">
+        <label for="form-tagline">Tagline</label>
+        <input type="text" id="form-tagline" name="tagline" placeholder="Short startup description" maxlength="300">
+        <span class="field-hint">Optional — a short summary of your startup</span>
+      </div>
+      <div class="workspace-form-group">
+        <label for="form-problem">Problem <span class="required">*</span></label>
+        <textarea id="form-problem" name="problem" rows="3" placeholder="What problem does your startup solve?" maxlength="2000" required></textarea>
+      </div>
+      <div class="workspace-form-group">
+        <label for="form-solution">Solution <span class="required">*</span></label>
+        <textarea id="form-solution" name="solution" rows="3" placeholder="How does your startup solve this problem?" maxlength="2000" required></textarea>
+      </div>
+      <div class="workspace-form-group">
+        <label for="form-industry">Industry</label>
+        <input type="text" id="form-industry" name="industry" placeholder="e.g. EdTech, FinTech, HealthTech" maxlength="100">
+      </div>
+      <div class="workspace-form-group">
+        <label for="form-target-market">Target Market</label>
+        <input type="text" id="form-target-market" name="target_market" placeholder="e.g. Students and online learners" maxlength="200">
+      </div>
+      <div class="workspace-form-group">
+        <label for="form-stage">Startup Stage</label>
+        <select id="form-stage" name="stage">
+          <option value="Idea">Idea</option>
+          <option value="Prototype">Prototype</option>
+          <option value="MVP">MVP</option>
+          <option value="Early Traction">Early Traction</option>
+          <option value="Growth">Growth</option>
+        </select>
+      </div>
+      <div class="workspace-form-actions">
+        <button type="button" class="btn btn--outline" id="form-cancel">Cancel</button>
+        <button type="submit" class="btn btn--primary" id="form-submit" data-ripple>
+          <span class="btn-text">Create Startup</span>
+          <span class="btn-spinner" aria-hidden="true"></span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===== ARCHIVE CONFIRMATION MODAL ===== -->
+<div class="workspace-modal-backdrop" id="modal-archive">
+  <div class="workspace-modal" role="dialog" aria-labelledby="archive-title" style="max-width:440px;">
+    <div class="confirm-dialog">
+      <div class="confirm-dialog__icon" aria-hidden="true">⚠️</div>
+      <h2 class="confirm-dialog__title" id="archive-title">Archive This Startup?</h2>
+      <p class="confirm-dialog__desc">Are you sure you want to archive this startup? You can no longer actively work on this workspace until it is restored.</p>
+      <div class="confirm-dialog__actions">
+        <button type="button" class="btn btn--outline" id="archive-cancel">Cancel</button>
+        <button type="button" class="btn btn--danger" id="archive-confirm" data-ripple>
+          <span class="btn-text">Archive Startup</span>
+          <span class="btn-spinner" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div class="workspace-toast" id="workspace-toast"></div>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer footer--simple">
+  <div class="container">
+    <a href="index.html" class="navbar__logo">
+      <span class="logo-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 17 4.5 17 11C17 14.5 15.5 17 15.5 17H8.5C8.5 17 7 14.5 7 11C7 4.5 12 2 12 2Z" fill="white"/><circle cx="12" cy="10" r="2" fill="#5B3FE4"/></svg></span>
+      <span class="navbar__brand navbar__brand--light">VentureAI</span>
+    </a>
+    <p>&copy; 2026 VentureAI. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="js/script.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/route-guard.js"></script>
+<script src="js/startup-workspace.js"></script>
+</body>
+</html>

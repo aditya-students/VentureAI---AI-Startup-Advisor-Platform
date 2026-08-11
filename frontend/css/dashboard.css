@@ -1,0 +1,145 @@
+/* ==========================================================================
+   VentureAI — dashboard.css
+   Shared styles for founder-dashboard.html, mentor-dashboard.html,
+   admin-dashboard.html. Extends tokens from style.css / auth.css.
+   ========================================================================== */
+
+/* Hide protected content until route-guard.js confirms the session + role,
+   preventing a flash of another role's dashboard while the check runs. */
+body[data-protected] .dashboard-content { display: none; }
+body[data-protected].route-verified .dashboard-content { display: block; }
+
+.dashboard-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: var(--nav-h);
+}
+body.route-verified .dashboard-loading { display: none; }
+.dashboard-loading__spinner {
+  width: 32px; height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--purple);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* ---------- page shell ---------- */
+.dashboard-main {
+  padding-top: calc(var(--nav-h) + 40px);
+  padding-bottom: 80px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FAFAFE 100%);
+}
+
+/* ---------- welcome banner ---------- */
+.dashboard-hero {
+  background: linear-gradient(135deg, var(--purple), var(--purple-2));
+  border-radius: var(--radius-lg);
+  padding: 36px 38px;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+.dashboard-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 85% 20%, rgba(255,255,255,0.16), transparent 55%);
+}
+.dashboard-hero__role {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--white);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+  position: relative;
+}
+.dashboard-hero h1 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+.dashboard-hero p {
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.98rem;
+  max-width: 520px;
+  position: relative;
+}
+
+/* ---------- section headings within the dashboard ---------- */
+.dashboard-section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 18px;
+}
+
+/* ---------- workspace / action card grid (Founder & Mentor) ---------- */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 22px;
+}
+/* .feature-card, .feature-card__icon, .card-link etc. are reused as-is from style.css */
+
+/* ---------- metric cards (Admin) ---------- */
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 22px;
+}
+.metric-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+.metric-card__icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: var(--light-purple);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.metric-card__num {
+  font-size: clamp(1.7rem, 3vw, 2.1rem);
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -0.02em;
+}
+.metric-card__label {
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* ---------- empty-state note (placeholder data disclosure) ---------- */
+.dashboard-note {
+  margin-top: 40px;
+  padding: 16px 20px;
+  background: var(--light-purple);
+  border: 1px solid #E2DBFF;
+  border-radius: var(--radius-sm);
+  color: var(--navy);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 620px) {
+  .dashboard-hero { padding: 28px 22px; }
+  .dashboard-main { padding-top: calc(var(--nav-h) + 24px); }
+}
