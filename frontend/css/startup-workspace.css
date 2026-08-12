@@ -4,6 +4,16 @@
    reuses patterns from dashboard.css and profile.css.
    ========================================================================== */
 
+/* ---------- wide workspace container ---------- */
+.container.workspace-container,
+.dashboard-main .container.workspace-container {
+  max-width: 1750px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 24px !important;
+  box-sizing: border-box !important;
+}
+
 /* ---------- workspace page shell ---------- */
 .workspace-header {
   display: flex;
@@ -281,10 +291,33 @@
 }
 
 /* ---------- activity section ---------- */
+#card-activity {
+  display: flex;
+  flex-direction: column;
+}
+
 .activity-list {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.activity-list::-webkit-scrollbar {
+  width: 6px;
+}
+.activity-list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+.activity-list::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.35);
+  border-radius: 4px;
+}
+.activity-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.65);
 }
 .activity-item {
   display: flex;

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business Model Canvas — VentureAI</title>
+<meta name="description" content="Interactive 9-Block AI Business Model Canvas for your startup.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/startup-workspace.css">
+<link rel="stylesheet" href="css/bmc.css">
+<!-- html2pdf.js for Document PDF Export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body data-protected>
+
+<!-- ================= NAVBAR ================= -->
+<header class="navbar" id="navbar">
+  <div class="container navbar__inner">
+    <a href="index.html" class="navbar__logo">
+      <span class="logo-icon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 17 4.5 17 11C17 14.5 15.5 17 15.5 17H8.5C8.5 17 7 14.5 7 11C7 4.5 12 2 12 2Z" fill="white"/><circle cx="12" cy="10" r="2" fill="#5B3FE4"/><path d="M8.5 17L6 21L9 19.5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 17L18 21L15 19.5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="navbar__brand">VentureAI</span>
+    </a>
+
+    <nav class="navbar__nav" id="navbar-nav" aria-label="Primary">
+      <ul></ul>
+    </nav>
+
+    <div class="navbar__actions" data-navbar-actions></div>
+
+    <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="mobile-nav" id="mobile-nav">
+    <ul></ul>
+    <div class="mobile-nav__actions" data-navbar-actions></div>
+  </div>
+</header>
+
+<main>
+
+<div class="dashboard-loading">
+  <div class="dashboard-loading__spinner" aria-label="Verifying your session"></div>
+</div>
+
+<div class="dashboard-content">
+  <section class="dashboard-main">
+    <div class="container workspace-container">
+
+      <!-- Dedicated BMC Workspace -->
+      <div id="bmc-page-container" class="bmc-page-wrapper">
+        <div id="bmc-section" class="bmc-section">
+
+          <!-- Loading State -->
+          <div id="bmc-loading" style="display:none;">
+            <div class="validation-loading">
+              <div class="validation-loading__title">Generating your Business Model Canvas...</div>
+              <div class="validation-loading__stages">
+                <div class="validation-stage validation-stage--done"><span class="validation-stage__icon">✓</span> Loading startup information</div>
+                <div class="validation-stage validation-stage--done"><span class="validation-stage__icon">✓</span> Loading validation insights</div>
+                <div class="validation-stage validation-stage--active"><span class="validation-stage__icon">●</span> Generating 9 business model blocks</div>
+                <div class="validation-stage validation-stage--pending"><span class="validation-stage__icon">○</span> Running Red Pen consistency audit</div>
+                <div class="validation-stage validation-stage--pending"><span class="validation-stage__icon">○</span> Saving version</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty State (canvas not generated yet) -->
+          <div id="bmc-empty-state" style="display:none;">
+            <div class="workspace-card" style="text-align:center;padding:60px 32px;max-width:680px;margin:40px auto;">
+              <div style="font-size:3.5rem;margin-bottom:16px;">🧩</div>
+              <h2 style="font-size:1.6rem;font-weight:700;margin-bottom:12px;color:#FFF;">Build Your Business Model Canvas</h2>
+              <p style="color:#94A3B8;max-width:540px;margin:0 auto 24px auto;font-size:1rem;line-height:1.6;">
+                Generate an AI-powered 9-block Business Model Canvas tailored to your startup workspace data and validation report insights.
+              </p>
+              <div id="bmc-context-info" style="margin-bottom:24px;"></div>
+              <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                <a href="startup-workspace.html" class="btn btn--outline">← Back to Workspace</a>
+                <button type="button" class="btn btn--primary btn--lg" id="btn-generate-bmc" data-ripple>
+                  <span class="btn-text">🚀 Generate Business Model Canvas</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Canvas Display State -->
+          <div id="bmc-main-state" style="display:none;">
+
+            <!-- Header Controls Bar -->
+            <div class="bmc-header-bar">
+              <div class="bmc-header-left">
+                <a href="startup-workspace.html" class="btn btn--outline bmc-back-btn">
+                  ← Back to Workspace
+                </a>
+                <div class="bmc-header-title-group">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <h2 style="margin:0;">🧩 Business Model Canvas</h2>
+                    <span id="bmc-startup-name-pill" class="bmc-context-badge" style="font-size:0.8rem;">Startup</span>
+                  </div>
+                  <p class="bmc-header-sub">Validation-aware strategic 9-block canvas workspace</p>
+                </div>
+              </div>
+
+              <div class="bmc-actions">
+                <div class="bmc-version-select-wrap">
+                  <label for="bmc-version-select">Version:</label>
+                  <select id="bmc-version-select" class="bmc-version-select">
+                    <!-- Populated by JS -->
+                  </select>
+                </div>
+                <button type="button" class="btn btn--outline" onclick="BMCApp.exportPDF()">
+                  📄 Save as PDF
+                </button>
+                <button type="button" class="btn btn--primary" onclick="BMCApp.generateBMC()">
+                  🔄 Regenerate Canvas
+                </button>
+              </div>
+            </div>
+
+            <!-- Pivot-Aware Mode Banner -->
+            <div id="bmc-pivot-banner" class="bmc-pivot-banner" style="display:none;"></div>
+
+            <!-- Red Pen Audit Card -->
+            <div id="bmc-audit-card" class="bmc-audit-card"></div>
+
+            <!-- 9-Block Grid Printable Container -->
+            <div id="bmc-export-container">
+              <div class="bmc-canvas-frame">
+                <div id="bmc-grid" class="bmc-grid"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+</main>
+
+<script src="js/script.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/route-guard.js"></script>
+<script src="js/bmc.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Parse startup_id from URL query string if provided
+  const urlParams = new URLSearchParams(window.location.search);
+  const startupId = urlParams.get('startup_id') || urlParams.get('id');
+  const autoGen = urlParams.get('generate') === 'true';
+
+  if (startupId) {
+    BMCApp.init(parseInt(startupId, 10));
+    if (autoGen) {
+      setTimeout(() => BMCApp.generateBMC(), 300);
+    }
+  } else {
+    // If no startup_id in URL, fetch founder's active startup workspace
+    apiRequest('/startups/me')
+      .then(res => res.json())
+      .then(startup => {
+        if (startup && startup.id) {
+          BMCApp.init(startup.id);
+          if (autoGen) {
+            setTimeout(() => BMCApp.generateBMC(), 300);
+          }
+        } else {
+          window.location.href = 'startup-workspace.html';
+        }
+      })
+      .catch(err => {
+        console.error("Failed to load startup:", err);
+        window.location.href = 'startup-workspace.html';
+      });
+  }
+});
+</script>
+</body>
+</html>

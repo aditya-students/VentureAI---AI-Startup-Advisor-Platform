@@ -171,19 +171,24 @@
     }
   }
 
+    let bmcHistory = [];
+
   /* ---------------------------------------------------------
      Render: Progress
   --------------------------------------------------------- */
   function renderProgress(startup) {
     const list = document.getElementById('progress-list');
+    if (!list) return;
 
-    // Check if validation has been done (we'll update this after loading)
+    // Check if validation has been done
     const validationDone = !!window._latestValidation;
+    // Check if Business Model Canvas exists
+    const bmcDone = !!(window._latestBMC && (window._latestBMC.version || window._latestBMC.version_number));
 
     const steps = [
       { label: 'Startup Created', done: true },
       { label: 'Idea Validation', done: validationDone },
-      { label: 'Business Model Canvas', done: false },
+      { label: 'Business Model Canvas', done: bmcDone },
       { label: 'Business Plan', done: false },
       { label: 'Pitch Deck', done: false },
       { label: 'Tasks', done: false },
@@ -219,6 +224,23 @@
           text: `AI Idea Validation completed (v${v.version} · Score: ${score}/100)`,
           time: v.created_at,
         });
+      });
+    }
+
+    // BMC runs / versions
+    if (bmcHistory && bmcHistory.length > 0) {
+      bmcHistory.forEach(b => {
+        const ver = b.version_number || b.version;
+        activities.push({
+          text: `Business Model Canvas generated (v${ver})`,
+          time: b.created_at,
+        });
+      });
+    } else if (window._latestBMC && (window._latestBMC.version || window._latestBMC.version_number)) {
+      const ver = window._latestBMC.version_number || window._latestBMC.version;
+      activities.push({
+        text: `Business Model Canvas generated (v${ver})`,
+        time: window._latestBMC.created_at || new Date().toISOString(),
       });
     }
 
@@ -987,6 +1009,11 @@
 
       // Load latest validation (if any)
       await loadLatestValidation();
+
+      // Load BMC workspace status summary
+      if (startup && startup.id) {
+        checkBMCStatus(startup.id);
+      }
     } catch (err) {
       // 404 means no startup yet — show empty state
       if (err.message && (err.message.includes('haven\'t created') || err.message.includes('404'))) {
@@ -994,6 +1021,74 @@
       } else {
         showEmptyState();
         showToast(err.message || 'Failed to load startup.', 'error');
+      }
+    }
+
+    // Helper: Check BMC status for workspace card
+    async function checkBMCStatus(startupId) {
+      try {
+        const bmc = await apiRequest(`/startups/${startupId}/bmc/latest`);
+        window._latestBMC = bmc;
+
+        try {
+          bmcHistory = await apiRequest(`/startups/${startupId}/bmc/history`);
+        } catch (_) {
+          bmcHistory = [];
+        }
+
+        const statusEl = document.getElementById('bmc-workspace-status');
+        const pdfBtn = document.getElementById('btn-workspace-pdf-bmc');
+        const openBtn = document.getElementById('btn-workspace-open-bmc');
+        const ctaEl = document.getElementById('tool-bmc-cta');
+
+        if (bmc && (bmc.version || bmc.version_number)) {
+          const verNum = bmc.version_number || bmc.version;
+          const healthScore = bmc.audit_data ? (bmc.audit_data.health_score ?? 100) : 100;
+          if (statusEl) {
+            statusEl.textContent = `Version v${verNum} • Health Score: ${healthScore}/100 • Ready`;
+          }
+          if (pdfBtn) {
+            pdfBtn.style.display = 'inline-flex';
+            pdfBtn.onclick = (e) => {
+              e.stopPropagation();
+              window.location.href = `bmc.html?startup_id=${startupId}&pdf=true`;
+            };
+          }
+          if (openBtn) {
+            openBtn.innerHTML = '<span class="btn-text">👁️ Open Canvas</span>';
+            openBtn.onclick = () => window.location.href = `bmc.html?startup_id=${startupId}`;
+          }
+          if (ctaEl) ctaEl.textContent = 'View Canvas';
+        } else {
+          if (statusEl) statusEl.textContent = 'No canvas generated yet';
+          if (openBtn) {
+            openBtn.innerHTML = '<span class="btn-text">🚀 Generate Canvas</span>';
+            openBtn.onclick = () => window.location.href = `bmc.html?startup_id=${startupId}&generate=true`;
+          }
+          if (ctaEl) ctaEl.textContent = 'Build Canvas';
+        }
+
+        if (currentStartup) {
+          renderProgress(currentStartup);
+          renderActivity(currentStartup);
+        }
+      } catch (err) {
+        window._latestBMC = null;
+        bmcHistory = [];
+        const statusEl = document.getElementById('bmc-workspace-status');
+        const openBtn = document.getElementById('btn-workspace-open-bmc');
+        const ctaEl = document.getElementById('tool-bmc-cta');
+        if (statusEl) statusEl.textContent = 'No canvas generated yet';
+        if (openBtn) {
+          openBtn.innerHTML = '<span class="btn-text">🚀 Generate Canvas</span>';
+          openBtn.onclick = () => window.location.href = `bmc.html?startup_id=${startupId}&generate=true`;
+        }
+        if (ctaEl) ctaEl.textContent = 'Build Canvas';
+
+        if (currentStartup) {
+          renderProgress(currentStartup);
+          renderActivity(currentStartup);
+        }
       }
     }
 
@@ -1029,6 +1124,16 @@
     document.getElementById('btn-validate-nextstep').addEventListener('click', runIdeaValidation);
     document.getElementById('btn-reanalyze').addEventListener('click', runIdeaValidation);
     document.getElementById('btn-show-history').addEventListener('click', loadValidationHistory);
+
+    // ----- Business Model Canvas Tool button -----
+    const toolBMC = document.getElementById('tool-business-model-canvas');
+    if (toolBMC) {
+      toolBMC.addEventListener('click', () => {
+        if (currentStartup && currentStartup.id) {
+          window.location.href = `bmc.html?startup_id=${currentStartup.id}`;
+        }
+      });
+    }
   });
 
 })();
