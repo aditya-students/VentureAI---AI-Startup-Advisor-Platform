@@ -5,6 +5,7 @@ Implements database CRUD, founder ownership enforcement, versioning,
 smart block updates, single-block regeneration, and audit execution.
 """
 
+import asyncio
 from copy import deepcopy
 from datetime import datetime, timezone
 from typing import List, Optional, Dict, Any
@@ -153,17 +154,20 @@ async def update_block(
     new_canvas = deepcopy(latest.canvas_data)
     now_iso = datetime.now(timezone.utc).isoformat()
 
+    existing_block = new_canvas.get(block_name)
+    existing_risk = existing_block.get("risk_notes") if isinstance(existing_block, dict) else None
+
     new_canvas[block_name] = {
         "items": items,
         "generated_by_ai": False,
         "modified_by_founder": True,
         "last_updated": now_iso,
-        "risk_notes": new_canvas.get(block_name, {}).get("risk_notes"),
+        "risk_notes": existing_risk,
     }
 
     # Re-run Red Pen audit pass
     context = build_bmc_context(db, startup_id)
-    audit_data = red_pen_audit_node(new_canvas, context)
+    audit_data = await asyncio.to_thread(red_pen_audit_node, new_canvas, context)
 
     new_version = BMCVersion(
         startup_id=startup_id,
@@ -200,7 +204,8 @@ async def regenerate_block(
     latest = get_latest_bmc(db, startup_id, user_id)
 
     context = build_bmc_context(db, startup_id)
-    new_items = regenerate_single_block_node(
+    new_items = await asyncio.to_thread(
+        regenerate_single_block_node,
         block_name,
         latest.canvas_data,
         context,
@@ -210,15 +215,18 @@ async def regenerate_block(
     new_canvas = deepcopy(latest.canvas_data)
     now_iso = datetime.now(timezone.utc).isoformat()
 
+    existing_block = new_canvas.get(block_name)
+    existing_risk = existing_block.get("risk_notes") if isinstance(existing_block, dict) else None
+
     new_canvas[block_name] = {
         "items": new_items,
         "generated_by_ai": True,
         "modified_by_founder": False,
         "last_updated": now_iso,
-        "risk_notes": new_canvas.get(block_name, {}).get("risk_notes"),
+        "risk_notes": existing_risk,
     }
 
-    audit_data = red_pen_audit_node(new_canvas, context)
+    audit_data = await asyncio.to_thread(red_pen_audit_node, new_canvas, context)
 
     new_version = BMCVersion(
         startup_id=startup_id,

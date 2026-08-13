@@ -26,7 +26,7 @@ const ROLE_DASHBOARD = {
 /* ---------------------------------------------------------
    Low-level API helper
 --------------------------------------------------------- */
-async function apiRequest(path, { method = 'GET', body } = {}) {
+async function apiRequest(path, { method = 'GET', body } = {}, isRetry = false) {
   const res = await fetch(`${API_BASE_URL}${path}`, {
     method,
     credentials: 'include', // required so HttpOnly auth cookies are sent/received
@@ -36,6 +36,20 @@ async function apiRequest(path, { method = 'GET', body } = {}) {
 
   let data = null;
   try { data = await res.json(); } catch (_) { /* empty body, e.g. some 204s */ }
+
+  if (res.status === 401 && !isRetry && path !== '/auth/login' && path !== '/auth/refresh') {
+    try {
+      const refreshRes = await fetch(`${API_BASE_URL}/auth/refresh`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (refreshRes.ok) {
+        return await apiRequest(path, { method, body }, true);
+      }
+    } catch (_) {
+      /* fallback to standard error handling */
+    }
+  }
 
   if (!res.ok) {
     const detail = data && data.detail;

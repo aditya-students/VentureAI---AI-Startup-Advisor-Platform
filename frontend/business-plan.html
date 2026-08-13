@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Business Plan — VentureAI</title>
+<meta name="description" content="AI-Powered Structured Business Plan Generator for your startup.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/startup-workspace.css">
+<link rel="stylesheet" href="css/business-plan.css">
+<!-- html2pdf.js for Document PDF Export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body data-protected>
+
+<!-- ================= NAVBAR ================= -->
+<header class="navbar" id="navbar">
+  <div class="container navbar__inner">
+    <a href="index.html" class="navbar__logo">
+      <span class="logo-icon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 17 4.5 17 11C17 14.5 15.5 17 15.5 17H8.5C8.5 17 7 14.5 7 11C7 4.5 12 2 12 2Z" fill="white"/><circle cx="12" cy="10" r="2" fill="#5B3FE4"/><path d="M8.5 17L6 21L9 19.5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 17L18 21L15 19.5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="navbar__brand">VentureAI</span>
+    </a>
+
+    <nav class="navbar__nav" id="navbar-nav" aria-label="Primary">
+      <ul></ul>
+    </nav>
+
+    <div class="navbar__actions" data-navbar-actions></div>
+
+    <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="mobile-nav" id="mobile-nav">
+    <ul></ul>
+    <div class="mobile-nav__actions" data-navbar-actions></div>
+  </div>
+</header>
+
+<main>
+
+<div class="dashboard-loading">
+  <div class="dashboard-loading__spinner" aria-label="Verifying your session"></div>
+</div>
+
+<div class="dashboard-content">
+  <section class="dashboard-main">
+    <div class="container workspace-container">
+
+      <div id="bp-page-wrapper" class="bp-page-wrapper">
+        <div id="bp-section" class="bp-section">
+
+          <!-- 1. LOADING STATE -->
+          <div id="bp-loading" style="display:none;">
+            <div class="validation-loading">
+              <div class="validation-loading__title">Generating Your Business Plan...</div>
+              <p style="color:#94A3B8;font-size:0.95rem;margin-bottom:24px;">Synthesizing workspace context, validation metrics, and business model canvas...</p>
+              <div class="validation-loading__stages" id="bp-loading-stages">
+                <div class="validation-stage validation-stage--done"><span class="validation-stage__icon">✓</span> Loading Startup Workspace context</div>
+                <div class="validation-stage validation-stage--done"><span class="validation-stage__icon">✓</span> Retrieving latest AI Idea Validation report</div>
+                <div class="validation-stage validation-stage--done"><span class="validation-stage__icon">✓</span> Retrieving latest Business Model Canvas</div>
+                <div class="validation-stage validation-stage--active"><span class="validation-stage__icon">●</span> Running 5 Parallel Domain Workers (Market, Model, GTM, Financial, Risk)</div>
+                <div class="validation-stage validation-stage--pending"><span class="validation-stage__icon">○</span> Synthesizing Executive Summary</div>
+                <div class="validation-stage validation-stage--pending"><span class="validation-stage__icon">○</span> Running Cross-Document Red Pen Consistency Audit</div>
+                <div class="validation-stage validation-stage--pending"><span class="validation-stage__icon">○</span> Persisting version history</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. MISSING PREREQUISITES STATE -->
+          <div id="bp-prereq-state" style="display:none;">
+            <div class="workspace-card" style="text-align:center;padding:60px 32px;max-width:680px;margin:40px auto;">
+              <div style="font-size:3.5rem;margin-bottom:16px;">⚠️</div>
+              <h2 style="font-size:1.6rem;font-weight:700;margin-bottom:12px;color:#FFF;">Prerequisites Required</h2>
+              <p id="bp-prereq-message" style="color:#94A3B8;max-width:540px;margin:0 auto 24px auto;font-size:1rem;line-height:1.6;">
+                Complete the required previous steps before generating your Business Plan.
+              </p>
+              
+              <div id="bp-prereq-checklist" class="bp-prereq-checklist" style="text-align:left;max-width:440px;margin:0 auto 28px auto;">
+                <!-- Dynamically populated checklist -->
+              </div>
+
+              <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                <a href="startup-workspace.html" class="btn btn--outline">← Back to Workspace</a>
+                <button type="button" class="btn btn--primary" id="btn-fix-prereq" onclick="BusinessPlanApp.goToPrerequisite()">
+                  Proceed to Next Required Step →
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. EMPTY STATE (Prerequisites met, but no plan generated yet) -->
+          <div id="bp-empty-state" style="display:none;">
+            <div class="workspace-card" style="text-align:center;padding:60px 32px;max-width:720px;margin:40px auto;">
+              <div style="font-size:3.5rem;margin-bottom:16px;">📑</div>
+              <h2 style="font-size:1.6rem;font-weight:700;margin-bottom:12px;color:#FFF;">Generate Your AI Business Plan</h2>
+              <p style="color:#94A3B8;max-width:560px;margin:0 auto 24px auto;font-size:1rem;line-height:1.6;">
+                Transform your validated startup workspace and business model canvas into a structured, investor-ready business plan covering 5 core operational domains with a consistency audit.
+              </p>
+              
+              <div class="bp-prereq-checklist" style="text-align:left;max-width:480px;margin:0 auto 28px auto;">
+                <div class="bp-prereq-item bp-prereq-item--checked">
+                  <span class="bp-prereq-icon">✓</span> Startup Workspace Loaded
+                </div>
+                <div class="bp-prereq-item bp-prereq-item--checked">
+                  <span class="bp-prereq-icon">✓</span> AI Idea Validation Report Ready
+                </div>
+                <div class="bp-prereq-item bp-prereq-item--checked">
+                  <span class="bp-prereq-icon">✓</span> AI Business Model Canvas Ready
+                </div>
+              </div>
+
+              <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                <a href="startup-workspace.html" class="btn btn--outline">← Back to Workspace</a>
+                <button type="button" class="btn btn--primary btn--lg" onclick="BusinessPlanApp.generatePlan()" data-ripple>
+                  <span class="btn-text">🚀 Generate Business Plan</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. MAIN BUSINESS PLAN DISPLAY STATE -->
+          <div id="bp-main-state" style="display:none;">
+
+            <!-- Header Controls Bar -->
+            <div class="bp-header-bar">
+              <div class="bp-header-left">
+                <a href="startup-workspace.html" class="btn btn--outline bp-back-btn">
+                  ← Workspace
+                </a>
+                <div class="bp-header-title-group">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <h2 style="margin:0;">📋 Business Plan</h2>
+                    <span id="bp-startup-name-pill" class="bp-badge bp-badge--primary">Startup</span>
+                    <span id="bp-pivot-badge" class="bp-badge bp-badge--warning" style="display:none;">Pivot-Aware Mode</span>
+                  </div>
+                  <p class="bp-header-sub">Validation-driven 5-domain strategic document</p>
+                </div>
+              </div>
+
+              <div class="bp-actions">
+                <div class="bp-version-select-wrap">
+                  <label for="bp-version-select">Version:</label>
+                  <select id="bp-version-select" class="bp-version-select" onchange="BusinessPlanApp.onVersionChange(this.value)">
+                    <!-- Populated by JS -->
+                  </select>
+                </div>
+                <button type="button" class="btn btn--outline" onclick="BusinessPlanApp.exportPDF()">
+                  📄 Export PDF
+                </button>
+                <button type="button" class="btn btn--primary" onclick="BusinessPlanApp.generatePlan()">
+                  🔄 New Version
+                </button>
+              </div>
+            </div>
+
+            <!-- Pivot-Aware Mode Banner -->
+            <div id="bp-pivot-banner" class="bp-pivot-banner" style="display:none;">
+              <div class="bp-pivot-banner__icon">⚠️</div>
+              <div class="bp-pivot-banner__content">
+                <strong>Low Validation Score Detected (<span id="bp-banner-val-score">0</span>/100)</strong>
+                <p>This Business Plan reflects current validation risks and is structured as a hypothesis-driven plan emphasizing validation gaps, buyer resistance, and pivot opportunities.</p>
+              </div>
+            </div>
+
+            <!-- Red Pen Audit Warnings Bar -->
+            <div id="bp-audit-card-wrap"></div>
+
+            <!-- Layout Grid: Sidebar Navigation + Document Reader -->
+            <div class="bp-layout-grid">
+              
+              <!-- Sidebar Document Navigation -->
+              <aside class="bp-sidebar">
+                <div class="bp-sidebar-title">Document Navigation</div>
+                <nav class="bp-nav-menu" id="bp-nav-menu">
+                  <button type="button" class="bp-nav-item active" data-target="sec-exec-summary">
+                    <span class="bp-nav-icon">📋</span> Executive Summary
+                  </button>
+                  <button type="button" class="bp-nav-item" data-target="sec-market-customer">
+                    <span class="bp-nav-icon">🎯</span> 1. Market & Customer
+                  </button>
+                  <button type="button" class="bp-nav-item" data-target="sec-business-model">
+                    <span class="bp-nav-icon">💡</span> 2. Business Model & Economics
+                  </button>
+                  <button type="button" class="bp-nav-item" data-target="sec-gtm-operations">
+                    <span class="bp-nav-icon">🚀</span> 3. Go-To-Market & Operations
+                  </button>
+                  <button type="button" class="bp-nav-item" data-target="sec-financial-structure">
+                    <span class="bp-nav-icon">📊</span> 4. Financial Structure
+                  </button>
+                  <button type="button" class="bp-nav-item" data-target="sec-risk-legal">
+                    <span class="bp-nav-icon">🛡️</span> 5. Risk, Validation & Legal
+                  </button>
+                  <button type="button" class="bp-nav-item" data-target="sec-audit-warnings">
+                    <span class="bp-nav-icon">🔍</span> Consistency Audit
+                    <span id="bp-audit-badge-count" class="bp-nav-count">0</span>
+                  </button>
+                </nav>
+              </aside>
+
+              <!-- Main Document View Area -->
+              <div class="bp-document-viewer" id="bp-document-viewer">
+
+                <!-- PDF Printable Wrapper -->
+                <div id="bp-export-container" class="bp-export-container">
+                  
+                  <!-- Cover Header Banner -->
+                  <div class="bp-doc-cover">
+                    <div class="bp-doc-cover__badge">VENTUREAI STARTUP BUSINESS PLAN</div>
+                    <h1 id="doc-startup-name" class="bp-doc-cover__title">Startup Name</h1>
+                    <p id="doc-startup-tagline" class="bp-doc-cover__tagline">Startup Tagline / Solution Summary</p>
+                    <div class="bp-doc-cover__meta">
+                      <span id="doc-meta-version">Version 1.0</span> • 
+                      <span id="doc-meta-date">Date</span> • 
+                      <span>Validation Score: <strong id="doc-meta-score">72/100</strong></span>
+                    </div>
+                  </div>
+
+                  <!-- Executive Summary -->
+                  <section id="sec-exec-summary" class="bp-doc-section">
+                    <div class="bp-section-header">
+                      <h3>📋 Executive Summary</h3>
+                      <button type="button" class="btn btn--xs btn--outline" onclick="BusinessPlanApp.openRegenModal('executive_summary')">🔄 Regenerate</button>
+                    </div>
+                    <div id="content-exec-summary" class="bp-section-body"></div>
+                  </section>
+
+                  <!-- Domain 1: Market & Customer -->
+                  <section id="sec-market-customer" class="bp-doc-section">
+                    <div class="bp-section-header">
+                      <h3>🎯 Domain 1 — Market & Customer</h3>
+                      <button type="button" class="btn btn--xs btn--outline" onclick="BusinessPlanApp.openRegenModal('market_customer')">🔄 Regenerate Section</button>
+                    </div>
+                    <div id="content-market-customer" class="bp-section-body"></div>
+                  </section>
+
+                  <!-- Domain 2: Business Model & Unit Economics -->
+                  <section id="sec-business-model" class="bp-doc-section">
+                    <div class="bp-section-header">
+                      <h3>💡 Domain 2 — Business Model & Unit Economics</h3>
+                      <button type="button" class="btn btn--xs btn--outline" onclick="BusinessPlanApp.openRegenModal('business_model_unit_economics')">🔄 Regenerate Section</button>
+                    </div>
+                    <div id="content-business-model" class="bp-section-body"></div>
+                  </section>
+
+                  <!-- Domain 3: Go-To-Market & Operations -->
+                  <section id="sec-gtm-operations" class="bp-doc-section">
+                    <div class="bp-section-header">
+                      <h3>🚀 Domain 3 — Go-To-Market & Operations</h3>
+                      <button type="button" class="btn btn--xs btn--outline" onclick="BusinessPlanApp.openRegenModal('gtm_operations')">🔄 Regenerate Section</button>
+                    </div>
+                    <div id="content-gtm-operations" class="bp-section-body"></div>
+                  </section>
+
+                  <!-- Domain 4: Financial Structure -->
+                  <section id="sec-financial-structure" class="bp-doc-section">
+                    <div class="bp-section-header">
+                      <h3>📊 Domain 4 — Financial Structure</h3>
+                      <button type="button" class="btn btn--xs btn--outline" onclick="BusinessPlanApp.openRegenModal('financial_structure')">🔄 Regenerate Section</button>
+                    </div>
+                    <div id="content-financial-structure" class="bp-section-body"></div>
+                  </section>
+
+                  <!-- Domain 5: Risk, Validation & Legal -->
+                  <section id="sec-risk-legal" class="bp-doc-section">
+                    <div class="bp-section-header">
+                      <h3>🛡️ Domain 5 — Risk, Validation & Legal</h3>
+                      <button type="button" class="btn btn--xs btn--outline" onclick="BusinessPlanApp.openRegenModal('risk_validation_legal')">🔄 Regenerate Section</button>
+                    </div>
+                    <div id="content-risk-legal" class="bp-section-body"></div>
+                  </section>
+
+                  <!-- Consistency Audit Warnings -->
+                  <section id="sec-audit-warnings" class="bp-doc-section">
+                    <div class="bp-section-header">
+                      <h3>🔍 Cross-Document Consistency Audit</h3>
+                    </div>
+                    <div id="content-audit-warnings" class="bp-section-body"></div>
+                  </section>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<!-- ================= REGENERATE MODAL ================= -->
+<div id="bp-regen-modal" class="bp-modal" style="display:none;">
+  <div class="bp-modal-content">
+    <div class="bp-modal-header">
+      <h4 id="bp-modal-title">Regenerate Section</h4>
+      <button type="button" class="bp-modal-close" onclick="BusinessPlanApp.closeRegenModal()">×</button>
+    </div>
+    <div class="bp-modal-body">
+      <p style="color:#94A3B8;font-size:0.9rem;margin-bottom:12px;">
+        Provide optional custom instructions to guide the AI when regenerating this section.
+      </p>
+      <input type="hidden" id="bp-modal-section-key">
+      <textarea id="bp-modal-instructions" class="bp-textarea" rows="4" placeholder="e.g. Focus on B2B subscription tier, emphasize CAC reduction..."></textarea>
+    </div>
+    <div class="bp-modal-footer">
+      <button type="button" class="btn btn--outline" onclick="BusinessPlanApp.closeRegenModal()">Cancel</button>
+      <button type="button" class="btn btn--primary" id="btn-submit-regen" onclick="BusinessPlanApp.submitRegenSection()">
+        🔄 Regenerate Section
+      </button>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script src="js/script.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/route-guard.js"></script>
+<script src="js/business-plan.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const startupId = urlParams.get('startup_id') || urlParams.get('id');
+  const autoGen = urlParams.get('generate') === 'true';
+
+  if (startupId) {
+    BusinessPlanApp.init(parseInt(startupId, 10), autoGen);
+  } else {
+    apiRequest('/startups/me')
+      .then(startup => {
+        if (startup && startup.id) {
+          BusinessPlanApp.init(startup.id, autoGen);
+        } else {
+          window.location.href = 'startup-workspace.html';
+        }
+      })
+      .catch(err => {
+        console.error("Failed to load startup:", err);
+        window.location.href = 'startup-workspace.html';
+      });
+  }
+});
+</script>
+</body>
+</html>

@@ -247,6 +247,9 @@
               <button type="button" class="btn btn--outline bmc-btn-sm btn-edit-block" data-block="${key}">
                 ✏️ Edit
               </button>
+              <button type="button" class="btn btn--outline bmc-btn-sm btn-regen-block" data-block="${key}">
+                🤖 AI Regenerate
+              </button>
             </div>
           </div>
         `;
@@ -266,6 +269,16 @@
             items = rawObj.items || [];
           }
           this.openEditModal(key, items);
+        });
+      });
+
+      // Bind block AI regenerate buttons
+      grid.querySelectorAll('.btn-regen-block').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const key = e.currentTarget.dataset.block;
+          this.openRegenBlockModal(key);
         });
       });
     },
@@ -453,6 +466,98 @@
           this.openEditModal(key, items);
         });
       });
+    },
+
+    openRegenBlockModal: function (blockKey) {
+      const meta = BLOCK_TITLES[blockKey];
+      const existingModal = document.getElementById('modal-regen-block-backdrop');
+      if (existingModal) existingModal.remove();
+
+      const modalHtml = `
+        <div class="bmc-dep-backdrop" id="modal-regen-block-backdrop">
+          <div class="bmc-dep-modal" style="position:relative;z-index:100000;">
+            <h3 class="bmc-dep-title">🤖 AI Regenerate ${meta ? meta.title : blockKey}</h3>
+            <p class="bmc-dep-desc">Optional custom instructions for AI (e.g. "Focus on B2B pricing model"):</p>
+            <textarea id="regen-block-instructions" rows="4" class="workspace-form-group" style="width:100%;padding:12px;background:#131722;color:#FFF;border:1px solid rgba(99,102,241,0.3);border-radius:8px;font-family:inherit;font-size:0.9rem;line-height:1.5;box-sizing:border-box;resize:vertical;" placeholder="Leave empty for standard AI regeneration..."></textarea>
+            <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px;">
+              <button type="button" class="btn btn--outline" id="btn-cancel-regen-block">Cancel</button>
+              <button type="button" class="btn btn--primary" id="btn-submit-regen-block">🔄 Regenerate Block</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+      const backdrop = document.getElementById('modal-regen-block-backdrop');
+      const cancelBtn = document.getElementById('btn-cancel-regen-block');
+      const submitBtn = document.getElementById('btn-submit-regen-block');
+
+      if (cancelBtn) cancelBtn.addEventListener('click', () => backdrop.remove());
+      if (backdrop) backdrop.addEventListener('click', (e) => { if (e.target === backdrop) backdrop.remove(); });
+
+      if (submitBtn) {
+        submitBtn.addEventListener('click', async () => {
+          const textarea = document.getElementById('regen-block-instructions');
+          const instructions = textarea ? textarea.value.trim() : '';
+          backdrop.remove();
+          await this.regenerateBlock(blockKey, instructions);
+        });
+      }
+    },
+
+    showToast: function (msg) {
+      const old = document.querySelector('.vp-toast');
+      if (old) old.remove();
+
+      const toast = document.createElement('div');
+      toast.className = 'vp-toast';
+      toast.innerHTML = `<span>⚡</span> <span>${msg}</span>`;
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => toast.remove(), 500);
+      }, 3500);
+    },
+
+    regenerateBlock: async function (blockKey, instructions) {
+      const loading = document.getElementById('bmc-loading');
+      const mainState = document.getElementById('bmc-main-state');
+
+      if (loading) loading.style.display = 'block';
+      if (mainState) mainState.style.display = 'none';
+
+      try {
+        currentBMC = await apiRequest(`/startups/${currentStartupId}/bmc/regenerate-block`, {
+          method: 'POST',
+          body: {
+            block_name: blockKey,
+            custom_instructions: instructions || null
+          }
+        });
+
+        if (loading) loading.style.display = 'none';
+        if (mainState) mainState.style.display = 'block';
+
+        this.renderBMC(currentBMC);
+        this.loadHistory();
+
+        const card = document.querySelector(`.bmc-card[data-block="${blockKey}"]`);
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          card.classList.add('bmc-card--highlight');
+          setTimeout(() => card.classList.remove('bmc-card--highlight'), 2600);
+        }
+
+        const title = BLOCK_TITLES[blockKey]?.title || blockKey;
+        this.showToast(`${title} block regenerated successfully (v${currentBMC.version_number || currentBMC.version})!`);
+      } catch (err) {
+        if (loading) loading.style.display = 'none';
+        if (mainState) mainState.style.display = 'block';
+        alert('Block Regeneration Error: ' + (err.message || err));
+      }
     },
 
     escapeHTML: function (str) {

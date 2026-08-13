@@ -81,4 +81,5 @@ class BlockUpdatePayload(BaseModel):
 
 class BlockRegeneratePayload(BaseModel):
     """Payload when requesting AI regeneration of a single block."""
+    block_name: Optional[str] = Field(default=None, description="Optional block key name")
     custom_instructions: Optional[str] = Field(default=None, description="Optional extra instructions from founder")

@@ -168,7 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     // If no startup_id in URL, fetch founder's active startup workspace
     apiRequest('/startups/me')
-      .then(res => res.json())
       .then(startup => {
         if (startup && startup.id) {
           BMCApp.init(startup.id);

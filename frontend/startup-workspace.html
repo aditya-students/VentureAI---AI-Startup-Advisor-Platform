@@ -159,13 +159,13 @@
                 </div>
                 <span class="tool-item__cta" id="tool-bmc-cta">Build Canvas</span>
               </div>
-              <div class="tool-item">
+              <div class="tool-item tool-item--active" id="tool-business-plan" style="cursor:pointer;">
                 <div class="tool-item__icon tool-item__icon--orange">📄</div>
                 <div class="tool-item__content">
-                  <div class="tool-item__name">Business Plan</div>
-                  <div class="tool-item__desc">Create a structured business plan.</div>
+                  <div class="tool-item__name">AI Business Plan</div>
+                  <div class="tool-item__desc">Create a structured, 5-domain AI business plan with Red Pen audit.</div>
                 </div>
-                <span class="tool-item__badge">Coming Soon</span>
+                <span class="tool-item__cta" id="tool-bp-cta">Generate Plan</span>
               </div>
               <div class="tool-item">
                 <div class="tool-item__icon tool-item__icon--purple">🎤</div>
@@ -232,69 +232,22 @@
           </div>
         </div>
 
-        <!-- ===== IDEA VALIDATION SECTION ===== -->
-        <div id="validation-section" class="validation-section" style="display:none;">
-
-          <!-- Loading state -->
-          <div id="validation-loading" style="display:none;">
-            <div class="validation-loading">
-              <div class="validation-loading__title">Analyzing your startup...</div>
-              <div class="validation-loading__stages" id="validation-stages">
-                <!-- Populated by JS -->
+        <!-- ===== AI IDEA VALIDATION SUMMARY CARD ===== -->
+        <div id="val-summary-card" class="workspace-card" style="margin-top:28px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+            <div style="display:flex;align-items:center;gap:16px;">
+              <div style="font-size:2.2rem;background:rgba(168,85,247,0.12);padding:12px 16px;border-radius:14px;color:#C084FC;">💡</div>
+              <div>
+                <h3 style="font-size:1.15rem;font-weight:700;margin:0 0 4px 0;color:#FFF;">AI Idea Validation</h3>
+                <p style="font-size:0.88rem;color:#94A3B8;margin:0;">Multi-agent adversarial analysis evaluating problem severity, market potential & risks.</p>
+                <div id="val-workspace-status" style="margin-top:6px;font-size:0.82rem;color:#C084FC;font-weight:600;"></div>
               </div>
             </div>
-          </div>
-
-          <!-- Report -->
-          <div id="validation-report" style="display:none;">
-
-            <!-- Action bar -->
-            <div class="validation-actions">
-              <button type="button" class="btn btn--primary" id="btn-reanalyze" data-ripple>
-                <span class="btn-text">🔄 Re-analyze Idea</span>
-              </button>
-              <button type="button" class="btn btn--outline" id="btn-show-history">
-                📋 View Previous Versions
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+              <button type="button" class="btn btn--primary" id="btn-workspace-open-val">
+                <span class="btn-text">👁️ Open Validation Report</span>
               </button>
             </div>
-
-            <!-- Score hero -->
-            <div id="score-hero"></div>
-
-            <!-- Veto warnings -->
-            <div id="veto-warnings"></div>
-
-            <!-- Score breakdown -->
-            <div class="workspace-card" style="margin-bottom:24px;">
-              <h3 class="workspace-card__title">
-                <span class="workspace-card__title-icon" aria-hidden="true">📊</span>
-                Score Breakdown
-              </h3>
-              <div id="dimension-scores" class="dimension-scores"></div>
-            </div>
-
-            <!-- LOFA -->
-            <div id="lofa-card"></div>
-
-            <!-- Overall Assessment -->
-            <div id="assessment-card"></div>
-
-            <!-- Red Team Analysis -->
-            <h2 class="workspace-section-title" style="margin-top:8px;">🎯 Red Team Analysis</h2>
-            <div id="redteam-grid" class="redteam-grid"></div>
-
-            <!-- Strengths & Risks -->
-            <div id="sr-grid" class="sr-grid"></div>
-
-            <!-- Falsification Blueprint -->
-            <div id="blueprint-card"></div>
-
-            <!-- Recommended Next Steps -->
-            <div id="val-nextsteps"></div>
-
-            <!-- Version history (hidden by default) -->
-            <div id="version-history" style="display:none;"></div>
-
           </div>
         </div>
 
@@ -315,6 +268,25 @@
               </button>
               <button type="button" class="btn btn--primary" id="btn-workspace-open-bmc">
                 <span class="btn-text">👁️ Open Canvas</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== AI BUSINESS PLAN SUMMARY CARD ===== -->
+        <div id="bp-summary-card" class="workspace-card" style="margin-top:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+            <div style="display:flex;align-items:center;gap:16px;">
+              <div style="font-size:2.2rem;background:rgba(245,158,11,0.12);padding:12px 16px;border-radius:14px;color:#FBBF24;">📋</div>
+              <div>
+                <h3 style="font-size:1.15rem;font-weight:700;margin:0 0 4px 0;color:#FFF;">AI Business Plan</h3>
+                <p style="font-size:0.88rem;color:#94A3B8;margin:0;">Structured 5-domain strategic document synthesized from workspace, validation & BMC.</p>
+                <div id="bp-workspace-status" style="margin-top:6px;font-size:0.82rem;color:#FBBF24;font-weight:600;"></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+              <button type="button" class="btn btn--primary" id="btn-workspace-open-bp">
+                <span class="btn-text">👁️ Open Business Plan</span>
               </button>
             </div>
           </div>
@@ -417,6 +389,7 @@
 <script src="js/script.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/route-guard.js"></script>
+<script src="js/idea-validation.js"></script>
 <script src="js/bmc.js"></script>
 <script src="js/startup-workspace.js"></script>
 </body>

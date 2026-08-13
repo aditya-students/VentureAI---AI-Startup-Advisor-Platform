@@ -184,12 +184,14 @@
     const validationDone = !!window._latestValidation;
     // Check if Business Model Canvas exists
     const bmcDone = !!(window._latestBMC && (window._latestBMC.version || window._latestBMC.version_number));
+    // Check if Business Plan exists
+    const bpDone = !!(window._latestBP && (window._latestBP.version || window._latestBP.id));
 
     const steps = [
       { label: 'Startup Created', done: true },
       { label: 'Idea Validation', done: validationDone },
       { label: 'Business Model Canvas', done: bmcDone },
-      { label: 'Business Plan', done: false },
+      { label: 'Business Plan', done: bpDone },
       { label: 'Pitch Deck', done: false },
       { label: 'Tasks', done: false },
     ];
@@ -591,15 +593,32 @@
   async function loadLatestValidation() {
     if (!currentStartup) return;
 
+    const valStatus = document.getElementById('val-workspace-status');
+    const openValBtn = document.getElementById('btn-workspace-open-val');
+
     try {
       const report = await apiRequest(`/startups/${currentStartup.id}/idea-validation/latest`);
       window._latestValidation = report;
-      renderValidationReport(report);
+
+      if (valStatus) {
+        const score = Math.round(report.scores?.final_validation_score || 0);
+        valStatus.innerHTML = `✅ Validation Report Active (v${report.version} · Score: ${score}/100)`;
+      }
+      if (openValBtn) {
+        openValBtn.onclick = () => {
+          window.location.href = `idea-validation.html?startup_id=${currentStartup.id}`;
+        };
+      }
       renderProgress(currentStartup);
     } catch (err) {
-      // 404 = no validation yet, silently ignore
-      if (!err.message || !err.message.includes('No validation report found')) {
-        console.error('Failed to load validation:', err);
+      if (valStatus) {
+        valStatus.innerHTML = `⚠️ Not Validated Yet`;
+      }
+      if (openValBtn) {
+        openValBtn.querySelector('.btn-text').textContent = '⚡ Run Idea Validation';
+        openValBtn.onclick = () => {
+          window.location.href = `idea-validation.html?startup_id=${currentStartup.id}&run=true`;
+        };
       }
     }
   }
@@ -1013,6 +1032,7 @@
       // Load BMC workspace status summary
       if (startup && startup.id) {
         checkBMCStatus(startup.id);
+        checkBPStatus(startup.id);
       }
     } catch (err) {
       // 404 means no startup yet — show empty state
@@ -1021,6 +1041,59 @@
       } else {
         showEmptyState();
         showToast(err.message || 'Failed to load startup.', 'error');
+      }
+    }
+
+    // Helper: Check Business Plan status for workspace card
+    async function checkBPStatus(startupId) {
+      try {
+        const bp = await apiRequest(`/startups/${startupId}/business-plan/latest`);
+        window._latestBP = bp;
+
+        const statusEl = document.getElementById('bp-workspace-status');
+        const openBtn = document.getElementById('btn-workspace-open-bp');
+        const ctaEl = document.getElementById('tool-bp-cta');
+
+        if (bp && bp.version) {
+          const auditHealth = bp.audit_report ? (bp.audit_report.health_score ?? 100) : 100;
+          const pivotText = bp.is_pivot_mode ? ' • Pivot-Aware' : '';
+          if (statusEl) {
+            statusEl.textContent = `Version v${bp.version}.0 • Audit Health: ${auditHealth}/100${pivotText} • Ready`;
+          }
+          if (openBtn) {
+            openBtn.innerHTML = '<span class="btn-text">👁️ Open Business Plan</span>';
+            openBtn.onclick = () => window.location.href = `business-plan.html?startup_id=${startupId}`;
+          }
+          if (ctaEl) ctaEl.textContent = 'View Plan';
+        } else {
+          if (statusEl) statusEl.textContent = 'No business plan generated yet';
+          if (openBtn) {
+            openBtn.innerHTML = '<span class="btn-text">🚀 Generate Plan</span>';
+            openBtn.onclick = () => window.location.href = `business-plan.html?startup_id=${startupId}&generate=true`;
+          }
+          if (ctaEl) ctaEl.textContent = 'Generate Plan';
+        }
+
+        if (currentStartup) {
+          renderProgress(currentStartup);
+          renderActivity(currentStartup);
+        }
+      } catch (err) {
+        window._latestBP = null;
+        const statusEl = document.getElementById('bp-workspace-status');
+        const openBtn = document.getElementById('btn-workspace-open-bp');
+        const ctaEl = document.getElementById('tool-bp-cta');
+        if (statusEl) statusEl.textContent = 'No business plan generated yet';
+        if (openBtn) {
+          openBtn.innerHTML = '<span class="btn-text">🚀 Generate Plan</span>';
+          openBtn.onclick = () => window.location.href = `business-plan.html?startup_id=${startupId}&generate=true`;
+        }
+        if (ctaEl) ctaEl.textContent = 'Generate Plan';
+
+        if (currentStartup) {
+          renderProgress(currentStartup);
+          renderActivity(currentStartup);
+        }
       }
     }
 
@@ -1120,10 +1193,32 @@
     });
 
     // ----- Idea Validation buttons -----
-    document.getElementById('tool-idea-validation').addEventListener('click', runIdeaValidation);
-    document.getElementById('btn-validate-nextstep').addEventListener('click', runIdeaValidation);
-    document.getElementById('btn-reanalyze').addEventListener('click', runIdeaValidation);
-    document.getElementById('btn-show-history').addEventListener('click', loadValidationHistory);
+    const toolVal = document.getElementById('tool-idea-validation');
+    if (toolVal) {
+      toolVal.addEventListener('click', () => {
+        if (currentStartup && currentStartup.id) {
+          window.location.href = `idea-validation.html?startup_id=${currentStartup.id}`;
+        }
+      });
+    }
+
+    const btnValNext = document.getElementById('btn-validate-nextstep');
+    if (btnValNext) {
+      btnValNext.addEventListener('click', () => {
+        if (currentStartup && currentStartup.id) {
+          window.location.href = `idea-validation.html?startup_id=${currentStartup.id}`;
+        }
+      });
+    }
+
+    const btnValOpenCard = document.getElementById('btn-workspace-open-val');
+    if (btnValOpenCard) {
+      btnValOpenCard.addEventListener('click', () => {
+        if (currentStartup && currentStartup.id) {
+          window.location.href = `idea-validation.html?startup_id=${currentStartup.id}`;
+        }
+      });
+    }
 
     // ----- Business Model Canvas Tool button -----
     const toolBMC = document.getElementById('tool-business-model-canvas');
@@ -1131,6 +1226,16 @@
       toolBMC.addEventListener('click', () => {
         if (currentStartup && currentStartup.id) {
           window.location.href = `bmc.html?startup_id=${currentStartup.id}`;
+        }
+      });
+    }
+
+    // ----- AI Business Plan Tool button -----
+    const toolBP = document.getElementById('tool-business-plan');
+    if (toolBP) {
+      toolBP.addEventListener('click', () => {
+        if (currentStartup && currentStartup.id) {
+          window.location.href = `business-plan.html?startup_id=${currentStartup.id}`;
         }
       });
     }

@@ -11,8 +11,8 @@ Endpoints:
   POST /startups/{startup_id}/bmc/audit            -> trigger Red Pen audit
 """
 
-from typing import List
-from fastapi import APIRouter, Depends, status
+from typing import List, Optional
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
@@ -110,14 +110,20 @@ async def update_bmc_block(
 )
 async def regenerate_bmc_block(
     startup_id: int,
-    block_name: str,
     payload: BlockRegeneratePayload,
+    block_name: Optional[str] = None,
     current_user: User = Depends(require_role("Founder")),
     db: Session = Depends(get_db),
 ):
     """Regenerate a single block with AI while keeping remaining blocks consistent."""
+    target_block = payload.block_name or block_name
+    if not target_block:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="block_name is required either in payload or query parameter.",
+        )
     return await service.regenerate_block(
-        db, startup_id, block_name, payload.custom_instructions, current_user.id
+        db, startup_id, target_block, payload.custom_instructions, current_user.id
     )
 
 
