@@ -1029,10 +1029,11 @@
       // Load latest validation (if any)
       await loadLatestValidation();
 
-      // Load BMC workspace status summary
+      // Load BMC, Business Plan, Pitch Deck workspace status summaries
       if (startup && startup.id) {
         checkBMCStatus(startup.id);
         checkBPStatus(startup.id);
+        checkPDStatus(startup.id);
       }
     } catch (err) {
       // 404 means no startup yet — show empty state
@@ -1041,6 +1042,49 @@
       } else {
         showEmptyState();
         showToast(err.message || 'Failed to load startup.', 'error');
+      }
+    }
+
+    // Helper: Check Pitch Deck status for workspace card
+    async function checkPDStatus(startupId) {
+      try {
+        const pd = await apiRequest(`/startups/${startupId}/pitch-deck/latest`);
+        window._latestPD = pd;
+
+        const statusEl = document.getElementById('pd-workspace-status');
+        const openBtn = document.getElementById('btn-workspace-open-pd');
+        const ctaEl = document.getElementById('tool-pd-cta');
+
+        if (pd && pd.version_number) {
+          const auditHealth = pd.audit_report ? (pd.audit_report.health_score ?? 100) : 100;
+          const valModeText = pd.is_validation_mode ? ' • Low Validation Mode' : '';
+          if (statusEl) {
+            statusEl.textContent = `Version v${pd.version_number}.0 • Audit Health: ${auditHealth}/100${valModeText} • Ready`;
+          }
+          if (openBtn) {
+            openBtn.innerHTML = '<span class="btn-text">👁️ Open Pitch Deck</span>';
+            openBtn.onclick = () => window.location.href = `pitch-deck.html?startup_id=${startupId}`;
+          }
+          if (ctaEl) ctaEl.textContent = 'View Deck';
+        } else {
+          if (statusEl) statusEl.textContent = 'No pitch deck generated yet';
+          if (openBtn) {
+            openBtn.innerHTML = '<span class="btn-text">🎤 Generate Pitch Deck</span>';
+            openBtn.onclick = () => window.location.href = `pitch-deck.html?startup_id=${startupId}&generate=true`;
+          }
+          if (ctaEl) ctaEl.textContent = 'Generate Deck';
+        }
+      } catch (err) {
+        window._latestPD = null;
+        const statusEl = document.getElementById('pd-workspace-status');
+        const openBtn = document.getElementById('btn-workspace-open-pd');
+        const ctaEl = document.getElementById('tool-pd-cta');
+        if (statusEl) statusEl.textContent = 'No pitch deck generated yet';
+        if (openBtn) {
+          openBtn.innerHTML = '<span class="btn-text">🎤 Generate Pitch Deck</span>';
+          openBtn.onclick = () => window.location.href = `pitch-deck.html?startup_id=${startupId}&generate=true`;
+        }
+        if (ctaEl) ctaEl.textContent = 'Generate Deck';
       }
     }
 
@@ -1236,6 +1280,16 @@
       toolBP.addEventListener('click', () => {
         if (currentStartup && currentStartup.id) {
           window.location.href = `business-plan.html?startup_id=${currentStartup.id}`;
+        }
+      });
+    }
+
+    // ----- AI Pitch Deck Tool button -----
+    const toolPD = document.getElementById('tool-pitch-deck');
+    if (toolPD) {
+      toolPD.addEventListener('click', () => {
+        if (currentStartup && currentStartup.id) {
+          window.location.href = `pitch-deck.html?startup_id=${currentStartup.id}`;
         }
       });
     }

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Mentorship Requests — VentureAI</title>
+<meta name="description" content="View and manage your mentorship requests on VentureAI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/profile.css">
+<link rel="stylesheet" href="css/mentor-profile.css">
+<link rel="stylesheet" href="css/mentor-discovery.css">
+<link rel="stylesheet" href="css/mentorship-requests.css">
+</head>
+<body data-protected>
+
+<!-- ================= NAVBAR ================= -->
+<header class="navbar" id="navbar">
+  <div class="container navbar__inner">
+    <a href="index.html" class="navbar__logo">
+      <span class="logo-icon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 17 4.5 17 11C17 14.5 15.5 17 15.5 17H8.5C8.5 17 7 14.5 7 11C7 4.5 12 2 12 2Z" fill="white"/><circle cx="12" cy="10" r="2" fill="#5B3FE4"/><path d="M8.5 17L6 21L9 19.5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 17L18 21L15 19.5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="navbar__brand">VentureAI</span>
+    </a>
+
+    <nav class="navbar__nav" id="navbar-nav" aria-label="Primary">
+      <ul></ul>
+    </nav>
+
+    <div class="navbar__actions" data-navbar-actions></div>
+
+    <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="mobile-nav" id="mobile-nav">
+    <ul></ul>
+    <div class="mobile-nav__actions" data-navbar-actions></div>
+  </div>
+</header>
+
+<main>
+
+<div class="dashboard-loading">
+  <div class="dashboard-loading__spinner" aria-label="Verifying your session"></div>
+</div>
+
+<div class="dashboard-content">
+  <section class="dashboard-main">
+    <div class="container">
+
+      <div class="dashboard-hero">
+        <span class="dashboard-hero__role" data-user-role>Founder</span>
+        <h1>My Mentorship Requests</h1>
+        <p>Track and manage your mentorship requests. Build meaningful connections with experienced mentors.</p>
+      </div>
+
+      <!-- Loading state -->
+      <div id="requests-loading" class="mentor-detail-loading">
+        <div class="mentor-detail-loading__spinner"></div>
+        <p style="color:var(--muted)">Loading your requests…</p>
+      </div>
+
+      <!-- Request list -->
+      <div id="requests-container" style="display:none;"></div>
+
+      <!-- Detail view -->
+      <div id="request-detail" style="display:none;"></div>
+
+    </div>
+  </section>
+</div>
+
+</main>
+
+<!-- Toast notification -->
+<div class="profile-toast" id="requests-toast"></div>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer footer--simple">
+  <div class="container">
+    <a href="index.html" class="navbar__logo">
+      <span class="logo-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 17 4.5 17 11C17 14.5 15.5 17 15.5 17H8.5C8.5 17 7 14.5 7 11C7 4.5 12 2 12 2Z" fill="white"/><circle cx="12" cy="10" r="2" fill="#5B3FE4"/></svg></span>
+      <span class="navbar__brand navbar__brand--light">VentureAI</span>
+    </a>
+    <p>&copy; 2026 VentureAI. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="js/script.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/route-guard.js"></script>
+<script src="js/mentorship-requests.js"></script>
+</body>
+</html>

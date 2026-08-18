@@ -1,0 +1,673 @@
+/* ==========================================================================
+   VentureAI — pitch-deck.css
+   Styles for AI Pitch Deck Generator page, presentation viewer, slide editor,
+   thumbnail navigation, Red Pen Auditor drawer, and PDF print layout.
+   ========================================================================== */
+
+/* Layout & Containers */
+.pd-main {
+  padding-top: calc(var(--nav-h, 72px) + 20px);
+  padding-bottom: 60px;
+  min-height: 100vh;
+  background: #0F172A;
+  color: #F8FAFC;
+}
+
+.pd-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px 60px;
+}
+
+.pd-header {
+  position: sticky;
+  top: var(--nav-h, 72px);
+  z-index: 900;
+  background: #0F172A;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-color, #334155);
+}
+
+.pd-header__title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pd-header__title h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin: 0;
+  color: #FFFFFF;
+}
+
+.pd-header__badge {
+  background: rgba(168, 85, 247, 0.15);
+  color: #C084FC;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.pd-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Upstream Alerts & Banners */
+.pd-alert-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.pd-alert-banner--warning {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #FCD34D;
+}
+
+.pd-alert-banner--info {
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #93C5FD;
+}
+
+.pd-alert-banner__icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+/* Main Presentation Layout */
+.pd-workspace {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 992px) {
+  .pd-workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Slide Thumbnail Navigator Sidebar */
+.pd-sidebar {
+  background: #1E293B;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  padding: 16px;
+  position: sticky;
+  top: calc(var(--nav-h, 72px) + 90px);
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+}
+
+.pd-sidebar__title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #334155;
+}
+
+.pd-thumb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pd-thumb-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: #0F172A;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.pd-thumb-item:hover {
+  border-color: #A855F7;
+  background: rgba(168, 85, 247, 0.06);
+}
+
+.pd-thumb-item.active {
+  border-color: #F59E0B;
+  background: rgba(245, 158, 11, 0.12);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.2);
+}
+
+.pd-thumb-num {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #F59E0B;
+  background: rgba(245, 158, 11, 0.15);
+  padding: 4px 8px;
+  border-radius: 6px;
+  min-width: 24px;
+  text-align: center;
+}
+
+.pd-thumb-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pd-thumb-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #F8FAFC;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pd-thumb-type {
+  font-size: 0.72rem;
+  color: #94A3B8;
+}
+
+.pd-thumb-badge {
+  font-size: 0.75rem;
+}
+
+/* Presentation Main Stage */
+.pd-stage-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pd-stage {
+  background: #151C2C;
+  border: 1px solid #232D42;
+  border-radius: 20px;
+  padding: 32px 36px;
+  min-height: 540px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+/* Frosted Glass Card UI & Hero Stat System */
+.pd-glass-card {
+  background: #151C2C;
+  border: 1px solid #232D42;
+  border-radius: 14px;
+  padding: 20px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.pd-glass-card:hover {
+  border-color: #38BDF8;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.12);
+  transform: translateY(-2px);
+}
+
+.pd-hero-stat-num {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #38BDF8;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.pd-hero-stat-label {
+  font-size: 0.88rem;
+  color: #94A3B8;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+/* Cover Ambient Glow Mesh */
+.pd-cover-canvas {
+  background: radial-gradient(circle at 85% 15%, rgba(56, 189, 248, 0.15) 0%, transparent 55%),
+              radial-gradient(circle at 15% 85%, rgba(168, 85, 247, 0.12) 0%, transparent 55%),
+              #151C2C !important;
+}
+
+.pd-slide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.pd-slide-header__num {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #F59E0B;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.pd-slide-header__tag {
+  background: rgba(255, 255, 255, 0.08);
+  color: #CBD5E1;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.pd-slide-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1.25;
+  margin: 0 0 10px 0;
+}
+
+.pd-slide-subtitle {
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: #94A3B8;
+  margin: 0 0 28px 0;
+  line-height: 1.4;
+}
+
+.pd-slide-body {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: #E2E8F0;
+  margin-bottom: 28px;
+}
+
+.pd-slide-keypoints {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.pd-keypoint-item {
+  background: #0F172A;
+  border: 1px solid #334155;
+  padding: 14px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.92rem;
+  color: #F1F5F9;
+}
+
+.pd-keypoint-icon {
+  color: #F59E0B;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Visual Components on Stage */
+.pd-visual-box {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px dashed #334155;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.pd-flow-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .pd-flow-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pd-flow-step {
+  background: #1E293B;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  position: relative;
+}
+
+.pd-flow-step__num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #F59E0B;
+  color: #0F172A;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+}
+
+.pd-flow-step__title {
+  font-weight: 700;
+  color: #FFF;
+  margin-bottom: 4px;
+}
+
+.pd-flow-step__desc {
+  font-size: 0.82rem;
+  color: #94A3B8;
+}
+
+.pd-slide-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid #334155;
+  font-size: 0.8rem;
+  color: #64748B;
+}
+
+/* Stage Navigation Controls */
+.pd-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: #1E293B;
+  border: 1px solid #334155;
+  border-radius: 14px;
+  padding: 14px 20px;
+}
+
+.pd-controls__nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pd-controls__counter {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #F8FAFC;
+  min-width: 60px;
+  text-align: center;
+}
+
+.pd-controls__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Red Pen Audit Drawer & Warnings */
+.pd-audit-drawer {
+  background: #1E293B;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.pd-audit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.pd-audit-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #FFF;
+}
+
+.pd-health-score {
+  font-size: 0.9rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
+.pd-health-score--high {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ADE80;
+}
+
+.pd-health-score--mid {
+  background: rgba(245, 158, 11, 0.15);
+  color: #FBBF24;
+}
+
+.pd-health-score--low {
+  background: rgba(239, 68, 68, 0.15);
+  color: #FCA5A5;
+}
+
+.pd-audit-warning-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pd-audit-warning-item {
+  background: #0F172A;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.pd-audit-warning-item--HIGH {
+  border-left: 4px solid #EF4444;
+}
+
+.pd-audit-warning-item--MEDIUM {
+  border-left: 4px solid #F59E0B;
+}
+
+.pd-audit-warning-item--LOW {
+  border-left: 4px solid #3B82F6;
+}
+
+.pd-warning-cat {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #F59E0B;
+  margin-bottom: 4px;
+}
+
+.pd-warning-issue {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #F8FAFC;
+  margin-bottom: 6px;
+}
+
+.pd-warning-fix {
+  font-size: 0.84rem;
+  color: #94A3B8;
+}
+
+/* Modal Overlays */
+.pd-modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.pd-modal-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.pd-modal {
+  background: #1E293B;
+  border: 1px solid #334155;
+  border-radius: 20px;
+  max-width: 640px;
+  width: 100%;
+  padding: 28px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+}
+
+.pd-modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.pd-modal__title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #FFF;
+  margin: 0;
+}
+
+.pd-modal__close {
+  background: none;
+  border: none;
+  color: #94A3B8;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+/* Floating Toast Notifications */
+.pd-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 10000;
+  background: #1E293B;
+  color: #F8FAFC;
+  border: 1px solid #334155;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  display: none;
+}
+
+.pd-toast.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.pd-toast--success { border-color: #22C55E; color: #4ADE80; }
+.pd-toast--error { border-color: #EF4444; color: #FCA5A5; }
+.pd-toast--info { border-color: #3B82F6; color: #93C5FD; }
+
+/* ==========================================================================
+   16:9 Landscape Slide Geometry & Print Engine Rules
+   ========================================================================== */
+
+@page {
+  size: 16in 9in;
+  margin: 0;
+}
+
+.pitch-slide-canvas {
+  width: 1920px !important;
+  height: 1080px !important;
+  min-width: 1920px !important;
+  min-height: 1080px !important;
+  max-width: 1920px !important;
+  max-height: 1080px !important;
+  box-sizing: border-box !important;
+  background-color: #151C2C !important;
+  color: #F8FAFC !important;
+  padding: 60px 80px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.pitch-slide-canvas .card-grid-container {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 24px !important;
+  width: 100% !important;
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+}
+
+.pitch-slide-canvas .slide-card {
+  background-color: #0E172A !important;
+  border: 1.5px solid #1E293B !important;
+  border-radius: 12px !important;
+  padding: 24px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+}
+
+@media print {
+  html, body {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: #151C2C !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .navbar, .footer, .pd-header, .pd-sidebar, .pd-controls, .pd-audit-drawer, .pd-alert-banner {
+    display: none !important;
+  }
+
+  .pitch-slide-canvas {
+    page-break-after: always !important;
+    break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}

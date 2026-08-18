@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Pitch Deck Generator — VentureAI</title>
+<meta name="description" content="Build an investor-ready 13-slide pitch deck grounded in your startup workspace data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/pitch-deck.css?v=1">
+
+<!-- html2pdf.js for Document PDF Export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body data-protected>
+
+<!-- ================= NAVBAR ================= -->
+<header class="navbar" id="navbar">
+  <div class="container navbar__inner">
+    <a href="index.html" class="navbar__logo">
+      <span class="logo-icon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 17 4.5 17 11C17 14.5 15.5 17 15.5 17H8.5C8.5 17 7 14.5 7 11C7 4.5 12 2 12 2Z" fill="white"/><circle cx="12" cy="10" r="2" fill="#5B3FE4"/><path d="M8.5 17L6 21L9 19.5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 17L18 21L15 19.5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="navbar__brand">VentureAI</span>
+    </a>
+
+    <nav class="navbar__nav" id="navbar-nav" aria-label="Primary">
+      <ul></ul>
+    </nav>
+
+    <div class="navbar__actions" data-navbar-actions></div>
+
+    <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="mobile-nav" id="mobile-nav">
+    <ul></ul>
+    <div class="mobile-nav__actions" data-navbar-actions></div>
+  </div>
+</header>
+
+<main class="pd-main">
+
+<!-- Loading Overlay -->
+<div id="pd-loading" class="dashboard-loading" style="display:none;">
+  <div class="dashboard-loading__spinner" aria-label="Processing pitch deck"></div>
+  <div id="pd-loading-text" style="margin-top:16px;color:#F8FAFC;font-weight:600;">Loading pitch deck…</div>
+</div>
+
+<div class="pd-container">
+
+  <!-- Header -->
+  <div class="pd-header">
+    <div class="pd-header__title">
+      <h1>AI Pitch Deck Generator</h1>
+      <span class="pd-header__badge" id="pd-version-badge">v1.0</span>
+    </div>
+    <div class="pd-header__actions">
+      <button type="button" class="btn btn--outline" onclick="PitchDeckApp.openHistoryModal()">
+        📋 Versions
+      </button>
+      <button type="button" class="btn btn--outline" onclick="PitchDeckApp.regenerateFullDeck()">
+        ⚡ Regenerate Deck
+      </button>
+      <button type="button" class="btn btn--primary" onclick="PitchDeckApp.exportPDF()" data-ripple>
+        <span class="btn-text">📄 Export PDF</span>
+      </button>
+      <button type="button" class="btn btn--outline" onclick="PitchDeckApp.exportPPTX()" style="border-color:#38BDF8;color:#38BDF8;">
+        📊 Export PPTX
+      </button>
+    </div>
+  </div>
+
+  <!-- Upstream Prereq Alert Banner -->
+  <div id="pd-prereq-banner" class="pd-alert-banner pd-alert-banner--info" style="display:none;">
+    <!-- Rendered dynamically -->
+  </div>
+
+  <!-- Low Validation Mode Banner -->
+  <div id="pd-val-mode-banner" class="pd-alert-banner pd-alert-banner--warning" style="display:none;">
+    <!-- Rendered dynamically -->
+  </div>
+
+  <!-- Empty State (No Pitch Deck generated yet) -->
+  <div id="pd-empty-state" style="display:none; text-align:center; padding:80px 20px; background:#1E293B; border:1px solid #334155; border-radius:20px;">
+    <div style="font-size:3.5rem; margin-bottom:16px;">🎤</div>
+    <h2 style="font-size:1.8rem; font-weight:800; color:#FFF; margin-bottom:12px;">Generate Your Investor Pitch Deck</h2>
+    <p style="color:#94A3B8; max-width:600px; margin:0 auto 28px; line-height:1.6;">
+      Automatically aggregate data from your Startup Workspace, Idea Validation Report, Business Model Canvas, and Business Plan to construct a structured 13-slide pitch deck without filling out duplicate forms.
+    </p>
+    <button type="button" class="btn btn--primary btn--lg" onclick="PitchDeckApp.generateDeck()" data-ripple>
+      <span class="btn-text">🚀 Generate Pitch Deck</span>
+    </button>
+  </div>
+
+  <!-- Main Presentation Grid -->
+  <div id="pd-workspace-grid" class="pd-workspace" style="display:none;">
+
+    <!-- Left Sidebar: Slide Navigator -->
+    <aside class="pd-sidebar">
+      <div class="pd-sidebar__title">13 Slides Presentation</div>
+      <div class="pd-thumb-list" id="pd-thumb-list">
+        <!-- Rendered dynamically -->
+      </div>
+    </aside>
+
+    <!-- Center Stage & Controls -->
+    <div class="pd-stage-wrap">
+
+      <!-- Presentation Slide Stage Card -->
+      <div class="pd-stage" id="pd-stage">
+        <!-- Active Slide Content Rendered dynamically -->
+      </div>
+
+      <!-- Controls bar -->
+      <div class="pd-controls">
+        <div class="pd-controls__nav">
+          <button type="button" class="btn btn--outline" onclick="PitchDeckApp.prevSlide()">
+            ← Previous
+          </button>
+          <span class="pd-controls__counter" id="pd-counter">1 / 13</span>
+          <button type="button" class="btn btn--outline" onclick="PitchDeckApp.nextSlide()">
+            Next →
+          </button>
+        </div>
+        <div class="pd-controls__actions">
+          <button type="button" class="btn btn--outline" onclick="PitchDeckApp.openEditModal()">
+            ✏️ Edit Slide
+          </button>
+          <button type="button" class="btn btn--outline" onclick="PitchDeckApp.openRegenModal()">
+            ⚡ Regenerate Slide
+          </button>
+        </div>
+      </div>
+
+      <!-- Red Pen Audit Drawer -->
+      <div class="pd-audit-drawer" id="pd-audit-drawer">
+        <!-- Rendered dynamically -->
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</main>
+
+<!-- ===== SLIDE EDIT MODAL ===== -->
+<div class="pd-modal-backdrop" id="pd-edit-modal">
+  <div class="pd-modal">
+    <div class="pd-modal__header">
+      <h3 class="pd-modal__title">Edit Slide <span id="edit-slide-num">1</span></h3>
+      <button type="button" class="pd-modal__close" onclick="PitchDeckApp.closeEditModal()">✕</button>
+    </div>
+    <div class="workspace-form-group">
+      <label for="edit-title">Header Title</label>
+      <input type="text" id="edit-title" class="form-input" style="width:100%;padding:10px;background:#0F172A;border:1px solid #334155;color:#FFF;border-radius:8px;"/>
+    </div>
+    <div class="workspace-form-group" style="margin-top:14px;">
+      <label for="edit-subtitle">Subtitle / Tagline</label>
+      <input type="text" id="edit-subtitle" class="form-input" style="width:100%;padding:10px;background:#0F172A;border:1px solid #334155;color:#FFF;border-radius:8px;"/>
+    </div>
+    <div class="workspace-form-group" style="margin-top:14px;">
+      <label for="edit-content">Main Explanation</label>
+      <textarea id="edit-content" rows="4" style="width:100%;padding:10px;background:#0F172A;border:1px solid #334155;color:#FFF;border-radius:8px;"></textarea>
+    </div>
+    <div class="workspace-form-group" style="margin-top:14px;">
+      <label for="edit-keypoints">Key Points (One per line)</label>
+      <textarea id="edit-keypoints" rows="3" style="width:100%;padding:10px;background:#0F172A;border:1px solid #334155;color:#FFF;border-radius:8px;"></textarea>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:20px;">
+      <button type="button" class="btn btn--outline" onclick="PitchDeckApp.closeEditModal()">Cancel</button>
+      <button type="button" class="btn btn--primary" onclick="PitchDeckApp.saveEditSlide()">Save Slide</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== REGENERATE SINGLE SLIDE MODAL ===== -->
+<div class="pd-modal-backdrop" id="pd-regen-modal">
+  <div class="pd-modal">
+    <div class="pd-modal__header">
+      <h3 class="pd-modal__title">Regenerate Slide <span id="regen-slide-num">1</span> with AI</h3>
+      <button type="button" class="pd-modal__close" onclick="PitchDeckApp.closeRegenModal()">✕</button>
+    </div>
+    <p style="color:#94A3B8;font-size:0.9rem;margin-bottom:16px;">
+      This will regenerate only the selected slide using AI while preserving the other 12 slides untouched.
+    </p>
+    <div class="workspace-form-group">
+      <label for="regen-instructions">Custom Focus / Instructions (Optional)</label>
+      <textarea id="regen-instructions" rows="3" placeholder="e.g. Focus more on SaaS recurring revenue metrics..." style="width:100%;padding:10px;background:#0F172A;border:1px solid #334155;color:#FFF;border-radius:8px;"></textarea>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:20px;">
+      <button type="button" class="btn btn--outline" onclick="PitchDeckApp.closeRegenModal()">Cancel</button>
+      <button type="button" class="btn btn--primary" onclick="PitchDeckApp.confirmRegenSlide()">⚡ Regenerate Slide</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== VERSION HISTORY MODAL ===== -->
+<div class="pd-modal-backdrop" id="pd-history-modal">
+  <div class="pd-modal">
+    <div class="pd-modal__header">
+      <h3 class="pd-modal__title">Pitch Deck Version History</h3>
+      <button type="button" class="pd-modal__close" onclick="PitchDeckApp.closeHistoryModal()">✕</button>
+    </div>
+    <div id="pd-history-list" class="pd-thumb-list" style="max-height:360px;overflow-y:auto;margin-bottom:16px;">
+      <!-- Rendered dynamically -->
+    </div>
+    <div style="display:flex;justify-content:flex-end;">
+      <button type="button" class="btn btn--outline" onclick="PitchDeckApp.closeHistoryModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="pd-toast" class="pd-toast"></div>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer footer--simple">
+  <div class="container">
+    <a href="index.html" class="navbar__logo">
+      <span class="logo-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 17 4.5 17 11C17 14.5 15.5 17 15.5 17H8.5C8.5 17 7 14.5 7 11C7 4.5 12 2 12 2Z" fill="white"/><circle cx="12" cy="10" r="2" fill="#5B3FE4"/></svg></span>
+      <span class="navbar__brand navbar__brand--light">VentureAI</span>
+    </a>
+    <p>&copy; 2026 VentureAI. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<script src="js/script.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/route-guard.js"></script>
+<script src="js/pitch-deck.js?v=3"></script>
+</body>
+</html>

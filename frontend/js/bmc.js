@@ -149,23 +149,34 @@
       try {
         currentVersions = await apiRequest(`/startups/${currentStartupId}/bmc/history`);
 
-        versionSelect.innerHTML = currentVersions.map(v => `
-          <option value="${v.version_number || v.version}" ${currentBMC && (currentBMC.version_number === (v.version_number || v.version) || currentBMC.version === (v.version_number || v.version)) ? 'selected' : ''}>
-            v${v.version_number || v.version} (${new Date(v.created_at).toLocaleDateString()})
-          </option>
-        `).join('');
+        versionSelect.innerHTML = currentVersions.map(v => {
+          const vNum = v.version_number || v.version || v.id;
+          const vVal = v.id || vNum;
+          const isSelected = currentBMC && (currentBMC.id === v.id || (currentBMC.version_number || currentBMC.version) === vNum);
+          return `
+            <option value="${vVal}" ${isSelected ? 'selected' : ''}>
+              v${vNum} (${new Date(v.created_at).toLocaleDateString()})
+            </option>
+          `;
+        }).join('');
       } catch (err) {
         console.error('Error loading BMC history:', err);
       }
     },
 
-    loadVersion: async function (versionNumber) {
+    loadVersion: async function (versionVal) {
       try {
-        const bmc = await apiRequest(`/startups/${currentStartupId}/bmc/versions/${versionNumber}`);
+        const bmc = await apiRequest(`/startups/${currentStartupId}/bmc/versions/${versionVal}`);
         currentBMC = bmc;
         this.renderBMC(currentBMC);
       } catch (err) {
-        alert('Error loading version: ' + (err.message || err));
+        try {
+          const bmc = await apiRequest(`/startups/${currentStartupId}/bmc/history/${versionVal}`);
+          currentBMC = bmc;
+          this.renderBMC(currentBMC);
+        } catch (e) {
+          alert('Error loading version: ' + (e.message || e || err));
+        }
       }
     },
 

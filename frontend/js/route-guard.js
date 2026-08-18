@@ -14,8 +14,20 @@ const DASHBOARD_ROLES = {
   'founder-profile': 'Founder',
   'startup-workspace.html': 'Founder',
   'startup-workspace': 'Founder',
+  'pitch-deck.html': 'Founder',
+  'pitch-deck': 'Founder',
+  'mentor-discovery.html': 'Founder',
+  'mentor-discovery': 'Founder',
+  'mentor-detail.html': 'Founder',
+  'mentor-detail': 'Founder',
+  'mentorship-requests.html': 'Founder',
+  'mentorship-requests': 'Founder',
   'mentor-dashboard.html': 'Mentor',
   'mentor-dashboard': 'Mentor',
+  'mentor-profile.html': 'Mentor',
+  'mentor-profile': 'Mentor',
+  'mentor-requests.html': 'Mentor',
+  'mentor-requests': 'Mentor',
   'admin-dashboard.html': 'Admin',
   'admin-dashboard': 'Admin',
 };
@@ -65,10 +77,14 @@ async function protectRoute() {
       return;
     }
 
-    // Populate placeholders
+    // Populate placeholders and ensure navbar is painted
     document.querySelectorAll('[data-user-name]').forEach(el => { el.textContent = user.name; });
     document.querySelectorAll('[data-user-email]').forEach(el => { el.textContent = user.email; });
     document.querySelectorAll('[data-user-role]').forEach(el => { el.textContent = user.role; });
+
+    if (typeof renderNavbarAuthState === 'function') {
+      renderNavbarAuthState(user);
+    }
 
     // Reveal protected content
     document.body.classList.add('route-verified');

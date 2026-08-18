@@ -20,6 +20,9 @@ from app.database.base import Base
 from app.users import models as _users_models  # noqa: F401  — registers all table definitions
 from app.startup import models as _startup_models  # noqa: F401  — registers startup table
 from app.idea_validation import models as _validation_models  # noqa: F401  — registers validation table
+from app.mentor import models as _mentor_models  # noqa: F401  — registers mentor profile table
+from app.mentorship import models as _mentorship_models  # noqa: F401  — registers mentorship request table
+from app.chat import models as _chat_models  # noqa: F401  — registers chat tables
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

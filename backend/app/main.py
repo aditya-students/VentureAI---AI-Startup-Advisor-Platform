@@ -23,6 +23,10 @@ from app.startup import models as _startup_models  # noqa: F401
 from app.idea_validation import models as _validation_models  # noqa: F401
 from app.bmc import models as _bmc_models  # noqa: F401
 from app.business_plan import models as _bp_models  # noqa: F401
+from app.pitch_deck import models as _pitch_deck_models  # noqa: F401
+from app.mentor import models as _mentor_models  # noqa: F401
+from app.mentorship import models as _mentorship_models  # noqa: F401
+from app.chat import models as _chat_models  # noqa: F401
 
 from app.auth.router import router as auth_router
 from app.founder.router import router as founder_router
@@ -30,6 +34,10 @@ from app.startup.router import router as startup_router
 from app.idea_validation.router import router as validation_router
 from app.bmc.router import router as bmc_router
 from app.business_plan.router import router as business_plan_router
+from app.pitch_deck.router import router as pitch_deck_router
+from app.mentor.router import router as mentor_router
+from app.mentorship.router import router as mentorship_router
+from app.chat.router import router as chat_router
 
 app = FastAPI(
     title="VentureAI API",
@@ -55,6 +63,10 @@ app.include_router(startup_router)
 app.include_router(validation_router)
 app.include_router(bmc_router)
 app.include_router(business_plan_router)
+app.include_router(pitch_deck_router)
+app.include_router(mentor_router)
+app.include_router(mentorship_router)
+app.include_router(chat_router)
 
 
 @app.on_event("startup")

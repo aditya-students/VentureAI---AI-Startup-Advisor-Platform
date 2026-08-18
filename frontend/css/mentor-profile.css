@@ -1,0 +1,331 @@
+/* ==========================================================================
+   VentureAI — mentor-profile.css
+   Styles specific to the Mentor Profile page. Extends profile.css
+   and reuses tokens from style.css + auth.css.
+   ========================================================================== */
+
+/* ---------- wider card for mentor profile ---------- */
+.mentor-profile-card {
+  max-width: 760px;
+}
+
+/* ---------- profile header (horizontal layout) ---------- */
+.mentor-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+.mentor-profile-header .profile-avatar {
+  margin: 0;
+  flex-shrink: 0;
+}
+.mentor-profile-header__info {
+  min-width: 0;
+}
+.mentor-profile-headline {
+  font-size: 1rem;
+  color: var(--muted);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+/* ---------- availability badge ---------- */
+.mentor-availability-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.mentor-availability-badge::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.mentor-availability-badge--available {
+  background: #F0FDF4;
+  color: #15803D;
+  border: 1px solid #BBF7D0;
+}
+.mentor-availability-badge--available::before {
+  background: #16A34A;
+}
+.mentor-availability-badge--limited {
+  background: #FFF7ED;
+  color: #C2410C;
+  border: 1px solid #FED7AA;
+}
+.mentor-availability-badge--limited::before {
+  background: #EA580C;
+}
+.mentor-availability-badge--unavailable {
+  background: var(--error-bg);
+  color: var(--error);
+  border: 1px solid var(--error-border);
+}
+.mentor-availability-badge--unavailable::before {
+  background: var(--error);
+}
+
+/* ---------- profile completion ---------- */
+.mentor-completion {
+  background: var(--light-purple);
+  border: 1px solid #E2DBFF;
+  border-radius: var(--radius-sm);
+  padding: 18px 22px;
+  margin-bottom: 8px;
+}
+.mentor-completion__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.mentor-completion__label {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+.mentor-completion__pct {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--purple);
+}
+.mentor-completion__bar {
+  height: 8px;
+  background: #E2DBFF;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.mentor-completion__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--purple), var(--purple-2));
+  border-radius: 999px;
+  transition: width 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.mentor-completion__hint {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+/* ---------- professional info grid ---------- */
+.mentor-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 18px;
+}
+.mentor-info-item__label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.mentor-info-item__value {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+/* ---------- experience stat grid ---------- */
+.mentor-experience-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.mentor-experience-stat {
+  background: var(--light-purple);
+  border: 1px solid #E2DBFF;
+  border-radius: var(--radius-sm);
+  padding: 18px 16px;
+  text-align: center;
+}
+.mentor-experience-stat__num {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--purple);
+  letter-spacing: -0.02em;
+}
+.mentor-experience-stat__label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* ---------- multi-select tag grid ---------- */
+.mentor-tag-select {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.mentor-tag-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--navy);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+}
+.mentor-tag-option:hover {
+  border-color: var(--purple);
+  color: var(--purple);
+  background: #FDFCFF;
+}
+.mentor-tag-option.selected {
+  background: var(--light-purple);
+  color: var(--purple);
+  border-color: var(--purple);
+}
+.mentor-tag-option.selected::before {
+  content: '✓';
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+/* ---------- form section titles ---------- */
+.mentor-form-section-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+.mentor-form-section-desc {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+
+/* ---------- form 2/3 column rows ---------- */
+.mentor-form-row-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.mentor-form-row-3col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+/* ---------- number input styling ---------- */
+.profile-form-group input[type="number"] {
+  font-family: var(--font);
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--navy);
+  font-size: 0.95rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+}
+.profile-form-group input[type="number"]:focus {
+  outline: none;
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(91, 63, 228, 0.12);
+}
+.profile-form-group input[type="number"]::placeholder { color: #9CA3AF; }
+
+/* ---------- select styling ---------- */
+.profile-form-group select {
+  font-family: var(--font);
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--navy);
+  font-size: 0.95rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%236B7280' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+.profile-form-group select:focus {
+  outline: none;
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(91, 63, 228, 0.12);
+}
+
+/* ---------- optional field indicator ---------- */
+.field-optional {
+  font-weight: 400;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 760px) {
+  .mentor-profile-card {
+    padding: 32px 22px;
+    border-radius: var(--radius-md);
+  }
+  .mentor-profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  .mentor-profile-header .profile-avatar {
+    margin: 0 auto;
+  }
+  .mentor-profile-header__info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .mentor-form-row-2col {
+    grid-template-columns: 1fr;
+  }
+  .mentor-form-row-3col {
+    grid-template-columns: 1fr;
+  }
+  .mentor-experience-grid {
+    grid-template-columns: 1fr;
+  }
+  .mentor-info-grid {
+    grid-template-columns: 1fr;
+  }
+  .profile-edit-actions {
+    flex-direction: column;
+  }
+  .profile-edit-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .mentor-profile-card {
+    padding: 24px 16px;
+  }
+  .profile-avatar {
+    width: 72px;
+    height: 72px;
+    font-size: 1.5rem;
+  }
+}

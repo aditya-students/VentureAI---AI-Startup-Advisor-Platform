@@ -115,12 +115,15 @@ def get_bmc_history(db: Session, startup_id: int, user_id: int) -> List[BMCVersi
 def get_bmc_version_by_id(
     db: Session, startup_id: int, version_id: int, user_id: int
 ) -> BMCVersion:
-    """Fetch a specific BMC version by ID."""
+    """Fetch a specific BMC version by ID or version number."""
     _verify_startup_ownership(db, startup_id, user_id)
 
     bmc = (
         db.query(BMCVersion)
-        .filter(BMCVersion.startup_id == startup_id, BMCVersion.id == version_id)
+        .filter(
+            BMCVersion.startup_id == startup_id,
+            (BMCVersion.id == version_id) | (BMCVersion.version == version_id)
+        )
         .first()
     )
     if not bmc:

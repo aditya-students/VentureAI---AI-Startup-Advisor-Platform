@@ -130,8 +130,11 @@ function loggedInActionsHTML(user) {
   const dashboardHref = ROLE_DASHBOARD[user.role] || 'index.html';
   const profileLink = user.role === 'Founder'
     ? `<a href="founder-profile.html">Profile</a>`
-    : '';
+    : user.role === 'Mentor'
+      ? `<a href="mentor-profile.html">Profile</a>`
+      : '';
   return `
+    <a href="chat.html" class="btn btn--outline" title="Mentorship Messages">💬 Messages</a>
     <a href="${dashboardHref}" class="btn btn--outline">Dashboard</a>
     <div class="navbar__profile" data-profile-menu>
       <button type="button" class="navbar__profile-btn" data-profile-toggle aria-haspopup="true" aria-expanded="false">
@@ -141,10 +144,51 @@ function loggedInActionsHTML(user) {
       <div class="navbar__profile-dropdown" data-profile-dropdown>
         ${profileLink}
         <a href="${dashboardHref}">Dashboard</a>
+        <a href="chat.html">Messages</a>
         <button type="button" data-logout-btn>Log out</button>
       </div>
     </div>
   `;
+}
+
+let isProfileMenuGlobalWired = false;
+
+function wireProfileMenu() {
+  if (isProfileMenuGlobalWired) return;
+  isProfileMenuGlobalWired = true;
+
+  document.addEventListener('click', async (e) => {
+    const toggleBtn = e.target.closest('[data-profile-toggle]');
+    const logoutBtn = e.target.closest('[data-logout-btn]');
+
+    if (toggleBtn) {
+      e.stopPropagation();
+      const parent = toggleBtn.closest('[data-profile-menu]');
+      const dropdown = parent ? parent.querySelector('[data-profile-dropdown]') : null;
+      if (dropdown) {
+        const isOpen = dropdown.classList.toggle('open');
+        toggleBtn.setAttribute('aria-expanded', String(isOpen));
+      }
+      return;
+    }
+
+    if (logoutBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      await logoutUser();
+      window.location.href = 'index.html';
+      return;
+    }
+
+    // Close all open profile dropdowns when clicking outside
+    document.querySelectorAll('[data-profile-dropdown].open').forEach(dd => {
+      if (!dd.closest('[data-profile-menu]').contains(e.target)) {
+        dd.classList.remove('open');
+        const parentBtn = dd.closest('[data-profile-menu]').querySelector('[data-profile-toggle]');
+        if (parentBtn) parentBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
 }
 
 function renderNavbarAuthState(user) {
@@ -155,36 +199,7 @@ function renderNavbarAuthState(user) {
   if (user) wireProfileMenu();
 }
 
-function wireProfileMenu() {
-  document.querySelectorAll('[data-profile-toggle]').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const dropdown = btn.closest('[data-profile-menu]').querySelector('[data-profile-dropdown]');
-      const isOpen = dropdown.classList.toggle('open');
-      btn.setAttribute('aria-expanded', String(isOpen));
-    });
-  });
-
-  document.querySelectorAll('[data-logout-btn]').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      await logoutUser();
-      window.location.href = 'index.html';
-    });
-  });
-
-  // Close any open dropdown when clicking outside it.
-  document.addEventListener('click', (e) => {
-    document.querySelectorAll('[data-profile-dropdown].open').forEach(dd => {
-      if (!dd.closest('[data-profile-menu]').contains(e.target)) {
-        dd.classList.remove('open');
-      }
-    });
-  });
-}
-
 async function initNavbarAuthState() {
-  // Paint instantly from cache to avoid a flash of the logged-out state,
-  // then reconcile with the server (cache can be stale/tampered with).
   renderNavbarAuthState(getCachedUser());
   const user = await getCurrentUser();
   renderNavbarAuthState(user);

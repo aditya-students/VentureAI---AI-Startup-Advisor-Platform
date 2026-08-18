@@ -64,6 +64,10 @@ def get_latest_bmc(
     "/{startup_id}/bmc/history",
     response_model=List[BMCVersionHistoryItem],
 )
+@router.get(
+    "/{startup_id}/bmc/versions",
+    response_model=List[BMCVersionHistoryItem],
+)
 def get_bmc_history(
     startup_id: int,
     current_user: User = Depends(require_role("Founder")),
@@ -77,13 +81,17 @@ def get_bmc_history(
     "/{startup_id}/bmc/history/{version_id}",
     response_model=BMCVersionResponse,
 )
+@router.get(
+    "/{startup_id}/bmc/versions/{version_id}",
+    response_model=BMCVersionResponse,
+)
 def get_bmc_version_by_id(
     startup_id: int,
     version_id: int,
     current_user: User = Depends(require_role("Founder")),
     db: Session = Depends(get_db),
 ):
-    """Return a specific Business Model Canvas version by ID."""
+    """Return a specific Business Model Canvas version by ID or version number."""
     return service.get_bmc_version_by_id(db, startup_id, version_id, current_user.id)
 
 

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mentor Profile — VentureAI</title>
+<meta name="description" content="View and edit your VentureAI mentor profile.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/profile.css">
+<link rel="stylesheet" href="css/mentor-profile.css">
+</head>
+<body data-protected>
+
+<!-- ================= NAVBAR ================= -->
+<header class="navbar" id="navbar">
+  <div class="container navbar__inner">
+    <a href="index.html" class="navbar__logo">
+      <span class="logo-icon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 17 4.5 17 11C17 14.5 15.5 17 15.5 17H8.5C8.5 17 7 14.5 7 11C7 4.5 12 2 12 2Z" fill="white"/><circle cx="12" cy="10" r="2" fill="#5B3FE4"/><path d="M8.5 17L6 21L9 19.5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 17L18 21L15 19.5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="navbar__brand">VentureAI</span>
+    </a>
+
+    <nav class="navbar__nav" id="navbar-nav" aria-label="Primary">
+      <ul></ul>
+    </nav>
+
+    <div class="navbar__actions" data-navbar-actions></div>
+
+    <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="mobile-nav" id="mobile-nav">
+    <ul></ul>
+    <div class="mobile-nav__actions" data-navbar-actions></div>
+  </div>
+</header>
+
+<main>
+
+<div class="dashboard-loading">
+  <div class="dashboard-loading__spinner" aria-label="Verifying your session"></div>
+</div>
+
+<div class="dashboard-content">
+  <section class="dashboard-main">
+    <div class="container">
+
+      <!-- ===== VIEW MODE ===== -->
+      <div class="profile-card mentor-profile-card profile-view" id="profile-view">
+
+        <!-- Profile Header -->
+        <div class="mentor-profile-header">
+          <div class="profile-avatar" id="profile-avatar" aria-hidden="true"></div>
+          <div class="mentor-profile-header__info">
+            <h1 class="profile-header__name" id="profile-name"></h1>
+            <p class="mentor-profile-headline" id="profile-headline"></p>
+            <div class="mentor-availability-badge" id="profile-availability-badge"></div>
+          </div>
+        </div>
+
+        <!-- Profile Completion -->
+        <div class="mentor-completion" id="profile-completion-section">
+          <div class="mentor-completion__header">
+            <span class="mentor-completion__label">Profile Completion</span>
+            <span class="mentor-completion__pct" id="profile-completion-pct">0%</span>
+          </div>
+          <div class="mentor-completion__bar">
+            <div class="mentor-completion__fill" id="profile-completion-fill" style="width: 0%"></div>
+          </div>
+          <p class="mentor-completion__hint" id="profile-completion-hint"></p>
+        </div>
+
+        <hr class="profile-divider">
+
+        <!-- About -->
+        <div class="profile-section" id="section-bio">
+          <div class="profile-section__label">About</div>
+          <div class="profile-section__value" id="profile-bio"></div>
+        </div>
+
+        <!-- Professional Information -->
+        <div class="profile-section" id="section-professional">
+          <div class="profile-section__label">Professional Information</div>
+          <div class="mentor-info-grid" id="profile-professional-info">
+            <div class="mentor-info-item">
+              <span class="mentor-info-item__label">Current Role</span>
+              <span class="mentor-info-item__value" id="profile-current-role"></span>
+            </div>
+            <div class="mentor-info-item">
+              <span class="mentor-info-item__label">Company</span>
+              <span class="mentor-info-item__value" id="profile-company"></span>
+            </div>
+            <div class="mentor-info-item">
+              <span class="mentor-info-item__label">Location</span>
+              <span class="mentor-info-item__value" id="profile-location"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Industry Expertise -->
+        <div class="profile-section" id="section-industries">
+          <div class="profile-section__label">Industry Expertise</div>
+          <div class="profile-skills" id="profile-industries"></div>
+        </div>
+
+        <!-- Areas of Expertise -->
+        <div class="profile-section" id="section-expertise">
+          <div class="profile-section__label">Areas of Expertise</div>
+          <div class="profile-skills" id="profile-expertise"></div>
+        </div>
+
+        <!-- Startup Stages -->
+        <div class="profile-section" id="section-stages">
+          <div class="profile-section__label">Startup Stage Expertise</div>
+          <div class="profile-skills" id="profile-stages"></div>
+        </div>
+
+        <!-- Mentorship Areas -->
+        <div class="profile-section" id="section-mentorship">
+          <div class="profile-section__label">Mentorship Areas</div>
+          <div class="profile-skills" id="profile-mentorship"></div>
+        </div>
+
+        <!-- Experience -->
+        <div class="profile-section" id="section-experience">
+          <div class="profile-section__label">Experience</div>
+          <div class="mentor-experience-grid" id="profile-experience-grid">
+            <div class="mentor-experience-stat">
+              <span class="mentor-experience-stat__num" id="profile-exp-professional">—</span>
+              <span class="mentor-experience-stat__label">Professional Experience</span>
+            </div>
+            <div class="mentor-experience-stat">
+              <span class="mentor-experience-stat__num" id="profile-exp-startup">—</span>
+              <span class="mentor-experience-stat__label">Startup Experience</span>
+            </div>
+            <div class="mentor-experience-stat">
+              <span class="mentor-experience-stat__num" id="profile-exp-mentoring">—</span>
+              <span class="mentor-experience-stat__label">Mentoring Experience</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit Button -->
+        <div class="profile-actions">
+          <button type="button" class="btn btn--primary" id="btn-edit-profile" data-ripple>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Edit Profile
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== EDIT MODE ===== -->
+      <div class="profile-card mentor-profile-card profile-edit" id="profile-edit">
+
+        <div class="mentor-profile-header">
+          <div class="profile-avatar" id="edit-avatar" aria-hidden="true"></div>
+          <div class="mentor-profile-header__info">
+            <h1 class="profile-header__name" id="edit-name"></h1>
+            <p class="mentor-profile-headline" id="edit-email-display" style="font-size:0.92rem;color:var(--muted)"></p>
+          </div>
+        </div>
+
+        <hr class="profile-divider">
+
+        <form id="profile-form" novalidate>
+
+          <!-- Basic Information -->
+          <h2 class="mentor-form-section-title">Basic Information</h2>
+
+          <div class="profile-form-group">
+            <label for="edit-headline">Professional Headline</label>
+            <input type="text" id="edit-headline" name="headline" placeholder="e.g. Startup Mentor & SaaS Growth Advisor" maxlength="200">
+            <span class="field-hint">Max 200 characters</span>
+          </div>
+
+          <div class="profile-form-group">
+            <label for="edit-bio">Bio</label>
+            <textarea id="edit-bio" name="bio" rows="4" placeholder="Tell mentees about your background, experience, and mentoring philosophy…" maxlength="2000"></textarea>
+            <span class="field-hint">Max 2000 characters</span>
+          </div>
+
+          <div class="mentor-form-row-2col">
+            <div class="profile-form-group">
+              <label for="edit-current-role">Current Role</label>
+              <input type="text" id="edit-current-role" name="current_role" placeholder="e.g. Startup Advisor" maxlength="150">
+            </div>
+            <div class="profile-form-group">
+              <label for="edit-company">Company / Organization</label>
+              <input type="text" id="edit-company" name="company" placeholder="e.g. ABC Ventures" maxlength="200">
+            </div>
+          </div>
+
+          <div class="profile-form-group">
+            <label for="edit-location">Location <span class="field-optional">(optional)</span></label>
+            <input type="text" id="edit-location" name="location" placeholder="e.g. Mumbai, India" maxlength="200">
+          </div>
+
+          <hr class="profile-divider">
+
+          <!-- Industry Expertise -->
+          <h2 class="mentor-form-section-title">Industry Expertise</h2>
+          <p class="mentor-form-section-desc">Select the industries you have experience in.</p>
+          <div class="mentor-tag-select" id="edit-industries" data-field="industries">
+            <!-- populated by JS -->
+          </div>
+
+          <hr class="profile-divider">
+
+          <!-- Areas of Expertise -->
+          <h2 class="mentor-form-section-title">Areas of Expertise</h2>
+          <p class="mentor-form-section-desc">Select the areas where you can provide guidance.</p>
+          <div class="mentor-tag-select" id="edit-expertise" data-field="areas_of_expertise">
+            <!-- populated by JS -->
+          </div>
+
+          <hr class="profile-divider">
+
+          <!-- Startup Stages -->
+          <h2 class="mentor-form-section-title">Startup Stage Expertise</h2>
+          <p class="mentor-form-section-desc">Which startup stages can you advise on?</p>
+          <div class="mentor-tag-select" id="edit-stages" data-field="startup_stages">
+            <!-- populated by JS -->
+          </div>
+
+          <hr class="profile-divider">
+
+          <!-- Mentorship Areas -->
+          <h2 class="mentor-form-section-title">Mentorship Areas</h2>
+          <p class="mentor-form-section-desc">What types of mentoring do you provide?</p>
+          <div class="mentor-tag-select" id="edit-mentorship" data-field="mentorship_areas">
+            <!-- populated by JS -->
+          </div>
+
+          <hr class="profile-divider">
+
+          <!-- Experience -->
+          <h2 class="mentor-form-section-title">Experience</h2>
+          <div class="mentor-form-row-3col">
+            <div class="profile-form-group">
+              <label for="edit-exp-professional">Professional (years)</label>
+              <input type="number" id="edit-exp-professional" name="years_of_experience" min="0" max="100" placeholder="e.g. 10">
+            </div>
+            <div class="profile-form-group">
+              <label for="edit-exp-startup">Startup (years)</label>
+              <input type="number" id="edit-exp-startup" name="startup_experience" min="0" max="100" placeholder="e.g. 6">
+            </div>
+            <div class="profile-form-group">
+              <label for="edit-exp-mentoring">Mentoring (years)</label>
+              <input type="number" id="edit-exp-mentoring" name="mentoring_experience" min="0" max="100" placeholder="e.g. 4">
+            </div>
+          </div>
+
+          <hr class="profile-divider">
+
+          <!-- Availability -->
+          <h2 class="mentor-form-section-title">Availability</h2>
+          <div class="profile-form-group">
+            <label for="edit-availability">Mentoring Availability</label>
+            <select id="edit-availability" name="availability">
+              <option value="Available">Available</option>
+              <option value="Limited Availability">Limited Availability</option>
+              <option value="Currently Unavailable">Currently Unavailable</option>
+            </select>
+          </div>
+
+          <div class="profile-form-group" style="margin-top: 4px;">
+            <label class="checkbox" style="font-weight:500; gap:10px; cursor:pointer;">
+              <input type="checkbox" id="edit-discoverable" name="is_discoverable" checked>
+              <span>Show my profile in the Mentor Directory<br><span style="font-size:0.8rem;color:var(--muted);font-weight:400">When enabled, founders can find and view your public profile.</span></span>
+            </label>
+          </div>
+
+          <!-- Actions -->
+          <div class="profile-edit-actions">
+            <button type="button" class="btn btn--outline" id="btn-cancel-edit">Cancel</button>
+            <button type="submit" class="btn btn--primary" id="btn-save-profile" data-ripple>
+              <span class="btn-text">Save Changes</span>
+              <span class="btn-spinner" aria-hidden="true"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+</main>
+
+<!-- Toast notification (inserted by JS) -->
+<div class="profile-toast" id="profile-toast"></div>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer footer--simple">
+  <div class="container">
+    <a href="index.html" class="navbar__logo">
+      <span class="logo-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 17 4.5 17 11C17 14.5 15.5 17 15.5 17H8.5C8.5 17 7 14.5 7 11C7 4.5 12 2 12 2Z" fill="white"/><circle cx="12" cy="10" r="2" fill="#5B3FE4"/></svg></span>
+      <span class="navbar__brand navbar__brand--light">VentureAI</span>
+    </a>
+    <p>&copy; 2026 VentureAI. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="js/script.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/route-guard.js"></script>
+<script src="js/mentor-profile.js"></script>
+</body>
+</html>

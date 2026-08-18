@@ -11,6 +11,7 @@ from app.users.models import User, Role, RoleName
 from app.auth.schemas import RegisterRequest
 from app.auth.jwt import hash_password, verify_password
 from app.founder.service import create_founder_profile
+from app.mentor.service import create_mentor_profile
 
 
 def get_role_by_name(db: Session, role_name: str) -> Role:
@@ -32,6 +33,7 @@ def register_user(db: Session, payload: RegisterRequest) -> User:
     3. Look up the role row (Founder/Mentor only — enforced in the schema validator)
     4. Persist and return the new user
     5. If the role is Founder, create an empty FounderProfile in the same transaction
+    6. If the role is Mentor, create an empty MentorProfile in the same transaction
     """
     existing = db.query(User).filter(User.email == payload.email).first()
     if existing:
@@ -49,11 +51,15 @@ def register_user(db: Session, payload: RegisterRequest) -> User:
         role_id=role.id,
     )
     db.add(user)
-    db.flush()  # assigns user.id so the FK is available for FounderProfile
+    db.flush()  # assigns user.id so the FK is available for profile creation
 
     # Founders get an empty profile record at registration.
     if payload.role == RoleName.FOUNDER.value:
         create_founder_profile(db, user.id)
+
+    # Mentors get an empty profile record at registration.
+    if payload.role == RoleName.MENTOR.value:
+        create_mentor_profile(db, user.id)
 
     db.commit()
     db.refresh(user)

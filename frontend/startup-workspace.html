@@ -167,13 +167,13 @@
                 </div>
                 <span class="tool-item__cta" id="tool-bp-cta">Generate Plan</span>
               </div>
-              <div class="tool-item">
+              <div class="tool-item tool-item--active" id="tool-pitch-deck" style="cursor:pointer;">
                 <div class="tool-item__icon tool-item__icon--purple">🎤</div>
                 <div class="tool-item__content">
-                  <div class="tool-item__name">Pitch Deck</div>
-                  <div class="tool-item__desc">Prepare an investor-ready pitch deck.</div>
+                  <div class="tool-item__name">AI Pitch Deck Generator</div>
+                  <div class="tool-item__desc">Build a 13-slide investor deck grounded in your workspace data.</div>
                 </div>
-                <span class="tool-item__badge">Coming Soon</span>
+                <span class="tool-item__cta" id="tool-pd-cta">Generate Deck</span>
               </div>
               <div class="tool-item">
                 <div class="tool-item__icon tool-item__icon--green">✅</div>
@@ -287,6 +287,25 @@
             <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
               <button type="button" class="btn btn--primary" id="btn-workspace-open-bp">
                 <span class="btn-text">👁️ Open Business Plan</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== AI PITCH DECK GENERATOR SUMMARY CARD ===== -->
+        <div id="pd-summary-card" class="workspace-card" style="margin-top:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+            <div style="display:flex;align-items:center;gap:16px;">
+              <div style="font-size:2.2rem;background:rgba(168,85,247,0.12);padding:12px 16px;border-radius:14px;color:#C084FC;">🎤</div>
+              <div>
+                <h3 style="font-size:1.15rem;font-weight:700;margin:0 0 4px 0;color:#FFF;">AI Pitch Deck Generator</h3>
+                <p style="font-size:0.88rem;color:#94A3B8;margin:0;">Structured, investor-ready 13-slide pitch deck grounded in startup workspace data.</p>
+                <div id="pd-workspace-status" style="margin-top:6px;font-size:0.82rem;color:#C084FC;font-weight:600;"></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+              <button type="button" class="btn btn--primary" id="btn-workspace-open-pd">
+                <span class="btn-text">👁️ Open Pitch Deck</span>
               </button>
             </div>
           </div>
