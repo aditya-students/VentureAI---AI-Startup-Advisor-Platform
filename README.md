@@ -1,4 +1,4 @@
-# VentureAI — AI Startup Incubation & Mentorship Platform
+# VentureAI — AI Powered StartUp Advisor
 
 > **An end-to-end, AI-powered platform for Founders, Mentors, and Admins.**  
 > VentureAI accelerates early-stage startup development by generating AI startup assets (Idea Validation, 9-Block Lean Canvas, 10-Slide Investor Pitch Decks, Executive Business Plans) and connecting founders with domain mentors via real-time WebSocket chat.
